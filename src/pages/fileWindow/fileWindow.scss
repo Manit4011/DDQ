@@ -1,0 +1,28 @@
+.file-window {
+    flex: 1;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+    // overflow-y: auto;
+  }
+  
+  .file-grid {
+    display: grid;
+    height: 90%;
+    // grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    // gap: 10px;
+  }
+  
+  .file-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 96%;
+    height: 82vh;
+  }
+
+  ag-theme-alpine{
+    height: 95%;
+    width: 100%;
+  }
