@@ -1,7 +1,7 @@
-
-
 import React, { useState } from "react";
 import "./chatbot.scss";
+import chatSubmit from '../../assets/icons/chat-submit-icon.svg'
+import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
 
 interface Message {
   text: string;
@@ -12,10 +12,10 @@ interface BotResponse {
   id: number;
   text: string;
 }
- interface ChatBotProps {
-  full:boolean;
- }
-const ChatBot: React.FC<ChatBotProps> = ( { full}) => {
+interface ChatBotProps {
+  full: boolean;
+}
+const ChatBot: React.FC<ChatBotProps> = ({ full }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const [botOptions, setBotOptions] = useState<BotResponse[] | null>(null);
@@ -41,20 +41,15 @@ const ChatBot: React.FC<ChatBotProps> = ( { full}) => {
   };
 
   const handleOptionSelect = (option: BotResponse) => {
-    console.log( `botoptions`,...messages);
     const botMessage: Message = { text: option.text, sender: "bot" };
-    setMessages([
-      ...messages,
-      
-      botMessage,
-    ]);
+    setMessages([...messages, botMessage]);
     setBotOptions(null); // Hide bot options after selecting one
   };
 
   return (
     // className={`chat-window ${isFullWidth ? 'full-width' : 'half-width'}`}
-    <div className={`chatbot-container ${!full ? 'full' : 'half'}`}>
-      <h2>DueDiligence Chatbot</h2>
+    <div className={`chatbot-container`}>
+      <h2>Chatbot</h2>
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div
@@ -67,39 +62,33 @@ const ChatBot: React.FC<ChatBotProps> = ( { full}) => {
           </div>
         ))}
 
-{botOptions && (
-        <div className="bot-options">
-          {botOptions.map((option) => (
-            <button
-              key={option.id}
-              className="bot-option"
-              onClick={() => handleOptionSelect(option)}
-            >
-              {option.text}
-            </button>
-          ))}
-        </div>
-      )}
+        {botOptions && (
+          <div className="bot-options">
+            {botOptions.map((option) => (
+              <button
+                key={option.id}
+                className="bot-option"
+                onClick={() => handleOptionSelect(option)}
+              >
+                {option.text}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      
       <div className="chatbot-input">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me something..."
+          placeholder="Ask a question"
         />
-
-
-        <button onClick={handleSend} disabled={input.trim() === ""}>
-          Send
+        <img src={fileUploadIcon} alt="" height={16} />
+        <button onClick={handleSend} disabled={input.trim() === ""} className="chat-submit">
+          <img src={chatSubmit} alt=""  height={40}/>
         </button>
-        </div>
-   
-
-      {/* Display bot's multiple response options */}
-     
+      </div>
     </div>
   );
 };

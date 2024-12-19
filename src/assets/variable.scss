@@ -1,0 +1,122 @@
+@import './functions.scss';
+
+/* font weights */
+$font-weight-thin: 200;
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-medium-bold: 600;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+$font-weight-extra-bold: 800;
+$font-weight-black: 900;
+
+/* Base Colors */
+$white: #ffffff;
+$white-1: #e7ebf3;
+$white-2: #fafbff;
+$grey: #d5d4d4;
+$thin-gray: #f0f2ff;
+$light-gray: #f5f6ff;
+$gray-300: #cccccc;
+$dark-gray: #555555;
+$black: #000000;
+$black-medium: #082737;
+
+/* other Colors */
+$primary-ddq: #232333;
+$secondary-ddq:#303045;
+$text-field-ddq: #7b6d954d;
+$chatbot-input: #3D3D57;
+$primary: #38a3a5;
+$green: #04aa6d;
+$red: #df4b33;
+$aqua: #00ffff;
+$aqua-dark: #0dcaf0;
+$aqua-light: #94ecff;
+$success: #56bd5b;
+$warning: #f7b422;
+$warning-light: #b7b468;
+$warning-light-extreme: #ceffc1;
+$danger: #e83535;
+$danger-active: #c60d0d;
+$grey-icon-color: #585858;
+$grey-icon-color-dark: #464646;
+$grey-back: lightgray;
+$name-color: #3e3e3e;
+$designation-color: #6b6b6b;
+$hover-color: #38a3a5;
+$headertitle-color: #393939;
+$name-color: #3e3e3e;
+$hover-color: #38a3a5;
+$title-color: #393939;
+$landing-footer: #0b1d29;
+$subtitle-color: #3e3e3e;
+$text-color: #6b6b6b;
+$cancel-button: #8d91b8;
+$grid-color: #f9faff;
+$secondary-heading: #686868;
+// font sizes
+
+/* font sizes */
+$font-size-xs: 0.625rem; //10px
+$font-size-s: 0.75rem; // 12px
+$font-size-ss: 0.813rem; // 13px
+$font-size-sm: 0.875rem; // 14px
+$font-size-m: 0.938rem; //15px
+$font-size-base: 1rem; // 16px
+$font-size-lg: 1.125rem; //18px
+$font-size-xl: 1.75rem; //28px
+
+// font styles and font family
+$font-style-normal: normal;
+$font-family-base: 'Lexend', sans-serif;
+$font-family-secondary: Verdana, sans-serif;
+
+// line heights
+$line-height-base: rem(10);
+$line-height-19: 1.188rem; //19px
+$line-height-24: 1.5rem; //24px
+$line-height-26: 1.625rem; //26px
+$line-height-35: 2.188rem; //35px
+$line-height-xlg: 1.5;
+$line-height-lg: 1.25;
+$line-height-sm: 0.9375;
+$line-height-default: $font-size-base;
+
+// letter-spacing
+$letter-spacing-base: 0.01em;
+
+// border radius and border color
+$border-radius: rem(6);
+$border-radius-xs: rem(2);
+$border-radius-md: rem(5);
+$border-radius-sm: rem(3);
+$border-radius-lg: rem(8);
+$border-radius-m: rem(12);
+$border-radius-base: rem(20);
+$border-radius-xlg: $font-size-base;
+$border-color: rgba($gray-300, 0);
+$border-color-light: #e2e2e2;
+$border-width: 1px;
+$border-width-2: 2px;
+$border-type-solid: solid;
+$border-type-dotted: dotted;
+$border-type-outset: outset;
+$border-type-dashed: dashed;
+
+//Default border size and thickness
+$border-size-base: rem(0) rem(4) rem(12) rem(4);
+$border-hr: rem(1) solid $white-1;
+
+// Default border to be used at various places
+$default-border: $border-width $border-type-solid $border-color;
+$border-shadow-base: $border-size-base $thin-gray;
+
+// Default padding and margins
+$padding: rem(10);
+$padding-5: rem(5);
+
+$margin: 1rem;
+$margin-10: rem(10);
+$margin-5: rem(5);

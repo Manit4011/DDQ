@@ -1,20 +1,103 @@
+@import "../../assets/variable.scss";
 
 .side-nav-bar {
-    // width: 10%;
-    // min-width: 200px;
-    background-color: #f4f4f4;
-    padding: 10px;
-    border-right: 1px solid #ddd;
+  background-color: $primary-ddq;
+  padding: rem(10);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .bot-logo {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem;
+    color: $white;
   }
-  
-  .upload-file button {
+
+  .bold-text {
+    margin-left: 0.25rem;
+    font-weight: $font-weight-medium-bold;
+    font-size: rem(24);
+  }
+
+  .normal-text {
+    margin-left: 0.25rem;
+    font-weight: $font-weight-medium;
+    font-size: rem(24);
+  }
+  .sidenav-options-container{
+    padding: 0 1.5rem;
+    margin-top: 2rem;
     width: 100%;
-    padding: 10px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    cursor: pointer;
+    .sidenav-option{
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      color: $white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .sidenav-text{
+      display: flex;
+      align-items: center;
+      font-size: $font-size-base;
+      font-weight: $font-weight-normal;
+    }
+    .icon-chatbot,
+        .icon-file {
+          margin-right: 0.5rem;
+          font-size: rem(20);
+        }
   }
+
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+    width: 100%;
+    display: flex
+;
+    flex-direction: column;
+    align-items: flex-start;
+
+    li {
+      margin: 1rem 0;
+      text-align: center;
+
+      a {
+        text-decoration: none;
+        color: $white;
+        font-size: rem(18);
+        font-weight: $font-weight-medium;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: lighten($white, 20%);
+        }
+
+        .icon-chatbot,
+        .icon-file {
+          margin-right: 0.5rem;
+          font-size: rem(20);
+        }
+      }
+    }
+  }
+}
+
+  
+  // .upload-file button {
+  //   width: 100%;
+  //   padding: 10px;
+  //   background-color: #4a90e2;
+  //   color: white;
+  //   border: none;
+  //   cursor: pointer;
+  // }
   .file-upload-box {
     display: flex;
     flex-direction: column;
@@ -35,13 +118,13 @@
     text-align: center;
     transition: border-color 0.3s;
 
-    .remove-file-button {
-      background: none;
-      border: none;
-      color: #ff4d4f;
-      cursor: pointer;
-      font-size: 18px;
-    }
+    // .remove-file-button {
+    //   background: none;
+    //   border: none;
+    //   color: #ff4d4f;
+    //   cursor: pointer;
+    //   font-size: 18px;
+    // }
 
     .file-info {
       display: flex;
@@ -88,17 +171,17 @@
         margin-top: 5px;
   }
   
-  button {
-          margin-top: 15px;
-          padding: 10px 20px;
-          background-color: #4a90e2;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s;
+  // button {
+  //         margin-top: 15px;
+  //         padding: 10px 20px;
+  //         background-color: #4a90e2;
+  //         color: #fff;
+  //         border: none;
+  //         border-radius: 5px;
+  //         cursor: pointer;
+  //         transition: background-color 0.3s;
     
-          &:hover {
-            background-color: #0056b3;
-          }
-        }     
+  //         &:hover {
+  //           background-color: #0056b3;
+  //         }
+  //       }     
