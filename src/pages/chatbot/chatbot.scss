@@ -1,33 +1,68 @@
 @import "../../assets/variable.scss";
+
 .chatbot-container {
   padding: 1rem;
   background-color: $secondary-ddq;
   height: 100%;
-  // height: calc(
-  //   100vh
-  // ); /* Fill remaining height of the screen, adjust for other */
-  overflow-y: auto;
-}
-.half {
-  width: 35%;
-}
-.full {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+
+  &.chat-started {
+    .chatbot-heading,
+    .disclaimer-text {
+      display: none;
+    }
+
+    .chatbot-messages {
+      flex-grow: 1;
+      width: 80%;
+      overflow-y: auto;
+      margin-top: 0;
+    }
+
+    .chatbot-input {
+      position: fixed;
+      bottom: 0;
+      width: 65%;
+      display: flex;
+      align-items: center;
+      background: $chatbot-input;
+      border-radius: rem(24);
+      padding: 0.5rem;
+      transition: all 0.3s ease-in-out;
+    }
+  }
 }
-h2 {
+
+.chatbot-heading {
   color: $white;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-medium-bold;
+  margin-top: 5rem;
+}
+
+.disclaimer-text {
+  color: rgba($color: $white, $alpha: 0.8);
+  font-size: $font-size-lg;
+  font-weight: $font-weight-normal;
+  letter-spacing: rem(1);
   text-align: center;
 }
+
 .chatbot-messages {
   display: flex;
   flex-direction: column;
+  width: 80%;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-top: 2rem;
   max-height: 75%;
   overflow-y: auto;
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: #a5a5a5 #f9f9f9;
+  scrollbar-color: $scrollbar-1 $scrollbar-2;
 }
 
 .message-bubble {
@@ -53,29 +88,49 @@ h2 {
 .chatbot-input {
   display: flex;
   align-items: center;
-}
-
-input {
   background: $chatbot-input;
-  flex-grow: 1;
-  padding: rem(30);
   border-radius: rem(24);
-  color: $white;
-  border: none;
-  overflow: scroll;
-  word-wrap: break-word;
-}
+  width: 80%;
+  position: relative;
+  padding: 0.5rem;
+  transition: all 0.3s ease-in-out;
 
-.chat-submit{
-  background: none;
-  border: none;
-  border-radius: 2.5rem;
-  max-height: 3rem;
-  cursor: pointer;
-  &:disabled{
-    cursor: not-allowed;
+  .file-upload-icon {
+    margin: 0 0.5rem;
+    cursor: pointer;
+  }
+
+  .chatbot-input-field {
+    background: none;
+    padding: 0.5rem;
+    color: $white;
+    border: none;
+    resize: none;
+    overflow-y: hidden;
+    width: 100%;
+    flex: 1;
+    margin: 0 0.5rem;
+    outline: none;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    height: auto;
+  }
+
+  .chat-submit {
+    background: none;
+    border: none;
+    border-radius: 2.5rem;
+    max-height: 3rem;
+    cursor: pointer;
+    &:disabled {
+      cursor: not-allowed;
+    }
+    &:focus {
+      border: none;
+    }
   }
 }
+
 .bot-options {
   display: flex;
   flex-direction: column;

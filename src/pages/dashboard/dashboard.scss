@@ -1,39 +1,55 @@
+@import "../../assets/variable.scss";
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 .layout {
   display: flex;
   height: 100%;
+  width: 100%;
 }
 
-.panel-content {
+.sidenav-dashboard-container {
+  transition: width 0.3s ease;
+  width: 22%; // Default width for the expanded sidebar
+  background-color: #333; // Sidebar background color, adjust as needed
   height: 100%;
-  overflow: hidden;
-}
-
-.placeholder {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+}
+
+.sidenav-dashboard-container.collapsed {
+  width: 5%; // Collapsed width for the sidebar
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1; // Takes up the remaining width
   height: 100%;
-  font-size: 18px;
-  color: #888;
 }
 
-.resize-handle {
-  width: 5px;
-  background-color: #ccc;
-  cursor: col-resize;
-  
+/* Header */
+.header {
+  background-color: $ddq-header;
+  padding: 1.5rem 1.25rem;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
 }
 
-.toggle-sidenav-button,
-.toggle-chatbot-button {
-  position: absolute;
-  top: 10px;
-  z-index: 10;
-  cursor: pointer;
+.chatbot-dashboard-container {
+  flex-grow: 1;
+  height: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+.cchatbot-dashboard-container.expanded {
+  margin-left: 22%; // When sidebar is collapsed, chatbot expands to take the full width
 }

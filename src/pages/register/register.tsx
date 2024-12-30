@@ -1,20 +1,32 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import "./register.scss";
 import { useNavigate } from "react-router-dom";
 import botLogo from "../../assets/images/bot-logo.svg";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import userpool from "../../states/userpool";
+import { CognitoUserAttribute } from "amazon-cognito-identity-js";
+import AuthModal from "../authModal/authModal";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPass, setConfirmPass] = useState<string>("");
+  const [emailErr, setEmailErr] = useState("");
+  const [passErr, setPassErr] = useState("");
+  const [confirmPassErr, setConfirmPassErr] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  // const [error, setError] = useState<string>("");
+  const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    const isAuthenticated = Boolean(sessionStorage.getItem("access-token"));
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, []);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -24,25 +36,88 @@ const Register: React.FC = () => {
   const handleLoginClick = () => {
     navigate("/login");
   };
+
+  const validation = (): Promise<{
+    email: string;
+    password: string;
+    confirmPass?: string;
+  }> => {
+    return new Promise((resolve, reject) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      if (email === "" && password === "") {
+        setEmailErr("Email is Required");
+        setPassErr("Password is required");
+        resolve({
+          email: "Email is Required",
+          password: "Password is required",
+        });
+      } else if (email === "") {
+        setEmailErr("Email is Required");
+        resolve({ email: "Email is Required", password: "" });
+      } else if (!emailRegex.test(email)) {
+        setEmailErr("Invalid email address");
+        resolve({ email: "Invalid email address", password: "" });
+      } else if (password === "") {
+        setPassErr("Password is required");
+        resolve({ email: "", password: "Password is required" });
+      } else if (!passwordRegex.test(password)) {
+        setPassErr("Invalid Password");
+        resolve({
+          email: "",
+          password: "Invalid Password",
+        });
+      } else if (confirmPass !== password) {
+        setConfirmPassErr("Passwords do not match");
+        resolve({
+          email: "",
+          password: "",
+          confirmPass: "Passwords do not match",
+        });
+      }
+      // If all validations pass
+      else {
+        resolve({ email: "", password: "", confirmPass: "" });
+      }
+
+      reject(""); // If for any reason none of the conditions match
+    });
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setEmailErr("");
+    setPassErr("");
+    validation()
+      .then(
+        (res) => {
+          if (
+            res.email === "" &&
+            res.password === "" &&
+            res.confirmPass === ""
+          ) {
+            const attributeList: CognitoUserAttribute[] = [];
+            attributeList.push(
+              new CognitoUserAttribute({
+                Name: "email",
+                Value: email,
+              })
+            );
+            userpool.signUp(email, password, attributeList, [], (err, data) => {
+              if (err) {
+                console.log(err);
+              }
+              console.log(data);
+              setOpenModal(true);
+            });
+          }
+        },
+        (err) => console.log(err)
+      )
+      .catch((err) => console.log(err));
     // navigate("/dashboard");
     // setLoading(true);
-    // setError("");
-
-    // const fakeAuth = { password: "password123" };
-
-    // if (password === fakeAuth.password) {
-    //   setTimeout(() => {
-    //     alert("Login successful!");
-    //     setLoading(false);
-    //   }, 1000);
-    // } else {
-    //   setTimeout(() => {
-    //     setError("Invalid email or password");
-    //     setLoading(false);
-    //   }, 1000);
-    // }
   };
 
   return (
@@ -61,15 +136,18 @@ const Register: React.FC = () => {
           <input
             type="text"
             placeholder="Enter "
+            id="email"
             className="form-field"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          {emailErr ? <span className="text-danger">{emailErr}</span> : ""}
           <div className="label-heading">Password</div>
           <div className="input-wrapper">
             <input
               placeholder="Enter"
+              id="password"
               className="form-field-pass"
               type={showPassword ? "text" : "password"}
               value={password}
@@ -85,10 +163,12 @@ const Register: React.FC = () => {
               {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </span>
           </div>
+          {passErr ? <span className="text-danger">{passErr}</span> : ""}
           <div className="label-heading">Confirm Password</div>
           <div className="input-wrapper">
             <input
               placeholder="Enter "
+              id="confirmPass"
               type={showConfirmPassword ? "text" : "password"}
               className="form-field"
               value={confirmPass}
@@ -104,6 +184,11 @@ const Register: React.FC = () => {
               {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </span>
           </div>
+          {confirmPassErr ? (
+            <span className="text-danger">{confirmPassErr}</span>
+          ) : (
+            ""
+          )}
           <button type="submit" className="submit-button" disabled={loading}>
             Register
           </button>
@@ -115,10 +200,8 @@ const Register: React.FC = () => {
           </div>
         </form>
       </div>
+      {openModal && <AuthModal closeModal={setOpenModal} />}
     </div>
-    //     <button type="submit" disabled={loading}>
-    //       {loading ? "Logging in..." : "Login"}
-    //     </button>
   );
 };
 

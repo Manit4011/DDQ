@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "./chatbot.scss";
-import chatSubmit from '../../assets/icons/chat-submit-icon.svg'
+import chatSubmit from "../../assets/icons/chat-submit-icon.svg";
 import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
+import {
+  CHATBOT_MESSAGES,
+  PLACEHOLDER_TEXT,
+  ICON_ALTS,
+} from "../../constants/constant";
 
 interface Message {
   text: string;
@@ -12,16 +17,14 @@ interface BotResponse {
   id: number;
   text: string;
 }
-interface ChatBotProps {
-  full: boolean;
-}
-const ChatBot: React.FC<ChatBotProps> = ({ full }) => {
+
+const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const [botOptions, setBotOptions] = useState<BotResponse[] | null>(null);
+  const [isChatStarted, setIsChatStarted] = useState<boolean>(false);
 
   const generateBotOptions = (userQuestion: string) => {
-    // Example logic to generate bot options based on the user's question
     const botResponses = [
       { id: 1, text: "Option 1: This is a response." },
       { id: 2, text: "Option 2: This is another response." },
@@ -33,23 +36,30 @@ const ChatBot: React.FC<ChatBotProps> = ({ full }) => {
 
   const handleSend = () => {
     if (input.trim() !== "") {
+      if (!isChatStarted) setIsChatStarted(true);
       const userMessage: Message = { text: input, sender: "user" };
       setMessages([...messages, userMessage]);
       setInput("");
-      generateBotOptions(input); // Trigger bot response options based on user question
+      generateBotOptions(input);
     }
   };
 
   const handleOptionSelect = (option: BotResponse) => {
     const botMessage: Message = { text: option.text, sender: "bot" };
     setMessages([...messages, botMessage]);
-    setBotOptions(null); // Hide bot options after selecting one
+    setBotOptions(null);
   };
 
   return (
-    // className={`chat-window ${isFullWidth ? 'full-width' : 'half-width'}`}
-    <div className={`chatbot-container`}>
-      <h2>Chatbot</h2>
+    <div className={`chatbot-container ${isChatStarted ? "chat-started" : ""}`}>
+      {!isChatStarted && (
+        <>
+          <div className="chatbot-heading">{CHATBOT_MESSAGES.heading}</div>
+          <div className="disclaimer-text">
+          {CHATBOT_MESSAGES.disclaimer}
+          </div>
+        </>
+      )}
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div
@@ -61,7 +71,6 @@ const ChatBot: React.FC<ChatBotProps> = ({ full }) => {
             {message.text}
           </div>
         ))}
-
         {botOptions && (
           <div className="bot-options">
             {botOptions.map((option) => (
@@ -76,17 +85,26 @@ const ChatBot: React.FC<ChatBotProps> = ({ full }) => {
           </div>
         )}
       </div>
-
       <div className="chatbot-input">
-        <input
-          type="text"
+        <img
+          className="file-upload-icon"
+          src={fileUploadIcon}
+          alt={ICON_ALTS.fileUpload}
+          height={20}
+        />
+        <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a question"
+          placeholder={PLACEHOLDER_TEXT}
+          className="chatbot-input-field"
+          rows={1}
         />
-        <img src={fileUploadIcon} alt="" height={16} />
-        <button onClick={handleSend} disabled={input.trim() === ""} className="chat-submit">
-          <img src={chatSubmit} alt=""  height={40}/>
+        <button
+          onClick={handleSend}
+          disabled={input.trim() === ""}
+          className="chat-submit"
+        >
+          <img src={chatSubmit} alt={ICON_ALTS.send} height={34} />
         </button>
       </div>
     </div>

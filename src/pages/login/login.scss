@@ -83,7 +83,17 @@
         align-items: center;
         width: 122%;
       }
-
+      .text-danger {
+        font-size: 12px;
+        color: $ddq-danger;
+        width: 100%;
+        margin-top: rem(-16);
+      }
+      .text-danger-1{
+        font-size: 12px;
+        color: $ddq-danger;
+        width: 100%;
+      }
       .toggle-password {
         color: $white;
         position: absolute;
