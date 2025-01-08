@@ -6,22 +6,23 @@ import crossIcon from "../../assets/icons/red-cross-ddq.svg";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { authenticate } from "../../services/authenticate";
-import userpool from "../../states/userpool";
+import { setToken } from "../../features/authSlice/index";
+import { useDispatch } from "react-redux";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [emailErr, setEmailErr] = useState("");
   const [passErr, setPassErr] = useState("");
-  const [loginErr,setLoginErr]=useState('');
+  const [loginErr, setLoginErr] = useState("");
 
-    useEffect(() => {
+  useEffect(() => {
     const isAuthenticated = Boolean(sessionStorage.getItem("access-token"));
     if (isAuthenticated) {
-      console.log("inside if user", isAuthenticated);
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, []);
   const togglePasswordVisibility = () => {
@@ -69,16 +70,26 @@ const Login: React.FC = () => {
     validation()
       .then(
         (res) => {
-          if(res.email === '' && res.password === ''){
-            authenticate(email,password).then((data)=>{
-              setLoginErr('');
-              console.log(data);
-              navigate('/dashboard');
-              sessionStorage.setItem('access-token',data.getAccessToken().getJwtToken())
-            },(err)=>{
-              console.log(err);
-              setLoginErr(err.message);
-            }).catch(err=> console.log(err))
+          if (res.email === "" && res.password === "") {
+            authenticate(email, password)
+              .then(
+                (data) => {
+                  setLoginErr("");
+                  console.log("data---", data);
+                  dispatch(
+                    setToken({
+                      access: data.getAccessToken().getJwtToken(),
+                      refresh: data.getRefreshToken().getToken(),
+                    })
+                  );
+                  navigate("/dashboard");
+                },
+                (err) => {
+                  console.log(err);
+                  setLoginErr(err.message);
+                }
+              )
+              .catch((err) => console.log(err));
           }
         },
         (err) => console.log(err)
@@ -111,7 +122,7 @@ const Login: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            {emailErr? <span className="text-danger">{emailErr}</span>: ''}
+            {emailErr ? <span className="text-danger">{emailErr}</span> : ""}
             <div className="label-heading">Password</div>
             <div className="input-wrapper">
               <input
@@ -132,8 +143,8 @@ const Login: React.FC = () => {
                 {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </span>
             </div>
-            {passErr? <span className="text-danger">{passErr}</span> : ''}
-            {loginErr? <span className="text-danger-1">{loginErr}</span>: ''}
+            {passErr ? <span className="text-danger">{passErr}</span> : ""}
+            {loginErr ? <span className="text-danger-1">{loginErr}</span> : ""}
             <div className="forgot-pass-option-container">
               {/* <div className="wrong-pass"><img src={crossIcon} alt="" /> Wrong Password</div> */}
               <div className="forgot-pass" onClick={handleForgotPass}>

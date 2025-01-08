@@ -1,6 +1,16 @@
 import { AuthenticationDetails, CognitoUser, CognitoUserSession } from 'amazon-cognito-identity-js';
 import userpool from '../states/userpool';
 
+interface UserAttributes {
+    [key: string]: string; // Generic key-value pairs for attributes
+  }
+  
+  interface SessionResponse {
+    user: any;
+    session: any;
+    attributes: UserAttributes;
+  }
+
 export const authenticate=(Email: string,Password: string): Promise<CognitoUserSession> =>{
     return new Promise((resolve,reject)=>{
         const user=new CognitoUser({
@@ -29,45 +39,10 @@ export const authenticate=(Email: string,Password: string): Promise<CognitoUserS
 export const logout = () => {
     const user = userpool.getCurrentUser();
     user?.signOut();
-    sessionStorage.removeItem('access-token');
     window.location.href = '/';
 };
 
-// export const getSession = async () => {
-//     return await new Promise((resolve,reject) =>{
-//         const user = userpool.getCurrentUser();
-//         if(user){
-//             user.getSession(async (err: any,session: unknown )=>{
-//                 if(err){
-//                     reject(err);
-//                 }else{
-//                     // resolve(session);
-//                     const attributes =await new Promise((resolve,reject)=>{
-//                         user.getUserAttributes((err,attributes) =>{
-//                             if(err){
-//                                 console.log(err);
-//                                 reject(err);
-//                             }else{
-//                                 const results = {};
-//                                 for(let attribute of attributes){
-//                                     const {Name,Value} = attribute;
-//                                     results[Name] = Value;
-//                                 }
-//                                 resolve(results);
-//                                 console.log(results);
-                                
-//                             }
-//                         })
-//                     })
-//                     resolve({user,...session,...attributes})
-//                 }
-//             })
-//         }else{
-//             reject();
-//         }
-//     })
-// }
-export const getSession = async () => {
+export const getSession = async (): Promise<SessionResponse> => {
     return await new Promise((resolve, reject) => {
         const user = userpool.getCurrentUser();
         if (user) {
@@ -88,8 +63,6 @@ export const getSession = async () => {
                                         results[Name] = Value;
                                     }
                                     resolve(results);
-                                    sessionStorage.setItem('user-email',results.email);
-                                    sessionStorage.setItem('username',results.sub);
                                 }
                             });
                         });
