@@ -1,0 +1,13 @@
+@import "../../assets/variable.scss";
+
+.login-header-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0 0.5rem;
+    .user-name{
+        margin-left: 0.5rem;
+        font-size: $font-size-base;
+        font-weight: $font-weight-medium;
+    }
+}

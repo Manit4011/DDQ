@@ -1,72 +1,88 @@
-import React, { useRef, useState } from 'react';
-import './sideNavBar.scss';
+import React, { useRef, useState } from "react";
+import "./sideNavBar.scss";
+import botLogo from "../../assets/images/bot-logo.svg";
+import botIcon from "../../assets/icons/sidenav-bot.svg";
+import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
+import sidenavShowIcon from "../../assets/icons/arrow-right-icon.svg";
 
 interface SideNavBarProps {
-  onFileUpload: (file: File | null) => void;
+  onToggleSideNav: () => void;
+  isCollapsed: boolean;
+  onTabChange: (tab: "chatbot" | "file-upload") => void;
 }
 
-const SideNavBar: React.FC<SideNavBarProps> = ({ onFileUpload }) => {
+const SideNavBar: React.FC<SideNavBarProps> = ({
+  onToggleSideNav,
+  isCollapsed,
+  onTabChange,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState<string>('');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<"chatbot" | "file-upload">(
+    "chatbot"
+  );
 
   const handleFileUploadClick = () => {
-    if (!uploadedFile) {
-      fileInputRef.current?.click();
-    }
+    fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      setUploadedFile(file);
-      onFileUpload(file);
-    }
-  };
-
-  const handleRemoveFile = () => {
-    setFileName('');
-    setUploadedFile(null);
-    onFileUpload(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+  const handleNavigation = (tab: "chatbot" | "file-upload", path: string) => {
+    setActiveTab(tab);
+    onTabChange(tab);
   };
 
   return (
-    <div className="side-nav-bar">
-      <div className="upload-file">
-        <h2>Upload Questionnaire Excel</h2>
-        <div className="file-upload-box" onClick={handleFileUploadClick}>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-            accept=".pdf, .xlsx, .csv, .docx"
-          />
-          {uploadedFile ? (
-            <div className="file-info">
-              <span className="file-name">{fileName}</span>
-              <button className="remove-file-button" onClick={handleRemoveFile}>
-                ✖
-              </button>
-            </div>
-          ) : (
-            <label htmlFor="file-input" className="file-input-label">
-              <div className="upload-icon">📁</div>
-              <span>Drag and drop a file here or click to browse</span>
-              <p className="limit">Limit 200MB per file • PDF, XLSX, CSV, DOCX</p>
-            </label>
-          )}
-        </div>
-        {!uploadedFile && (
-          <button className="upload-button" onClick={handleFileUploadClick}>
-            Upload File
-          </button>
+    <div className={`side-nav-bar ${isCollapsed ? "collapsed" : ""}`}>
+      <div className="bot-logo">
+        <img src={botLogo} alt="ChatBot Logo" width={50} height={50} />
+        {!isCollapsed && (
+          <>
+            <span className="bold-text">DDQ</span>
+            <span className="normal-text">chatbot</span>
+          </>
         )}
       </div>
+      <div className="sidenav-options-container">
+        <div
+          className="sidenav-option"
+          onClick={() => handleNavigation("chatbot", "/chatbot")}
+        >
+          <div className="sidenav-text">
+            <i className="icon-chatbot">
+              <img src={botIcon} alt="" />
+            </i>
+            {!isCollapsed && <div>ChatBot</div>}
+          </div>
+          {activeTab === "chatbot" && !isCollapsed && (
+            <div>
+              <img src={sidenavShowIcon} alt="" />
+            </div>
+          )}
+        </div>
+        <div
+          className="sidenav-option"
+          onClick={() => handleNavigation("file-upload", "/file-upload")}
+        >
+          <div className="sidenav-text">
+            <i className="icon-file">
+              <img src={fileUploadIcon} alt="" />
+            </i>
+            {!isCollapsed && <div>File Upload and Processing</div>}
+          </div>
+          {activeTab === "file-upload" && !isCollapsed && (
+            <div>
+              <img src={sidenavShowIcon} alt="" />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <button
+        className="toggle-arrow-button"
+        onClick={onToggleSideNav} // Pass this function from the parent
+      >
+        <i className="arrow-icon">{isCollapsed ? ">" : "<"}</i>
+      </button>
     </div>
   );
 };

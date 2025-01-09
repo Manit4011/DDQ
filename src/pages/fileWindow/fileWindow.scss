@@ -1,8 +1,13 @@
+@import "../../assets/variable.scss";
 .file-window {
-    flex: 1;
-    padding: 10px;
-    border-right: 1px solid #ddd;
-    // overflow-y: auto;
+  padding: 1rem;
+  background-color: $secondary-ddq;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
   }
   
   .file-grid {

@@ -1,6 +1,7 @@
+// src/pages/login/login.scss
 @import "../../assets/variable.scss";
 
-.login-container {
+.register-container {
   display: flex;
   height: 100vh;
   .bold-text {
@@ -39,6 +40,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      max-width: rem(300);
 
       .form-heading {
         font-size: $font-size-xl;
@@ -53,8 +55,9 @@
         font-weight: $font-weight-normal;
         // margin-left: 0.25rem;
       }
-      .form-field {
+      .form-field-pass {
         margin: 0.5rem 0 1.5rem 0;
+        // margin: 0.5rem 0 0.25rem 0;
         background: $text-field-ddq;
         padding: rem(13) rem(24);
         width: 100%;
@@ -65,8 +68,8 @@
           border: none;
         }
       }
-      .form-field-pass {
-        margin: 0.5rem 0 0.25rem 0;
+      .form-field {
+        margin: 0.5rem 0 1.5rem 0;
         background: $text-field-ddq;
         padding: rem(13) rem(24);
         width: 100%;
@@ -89,11 +92,6 @@
         width: 100%;
         margin-top: rem(-16);
       }
-      .text-danger-1{
-        font-size: 12px;
-        color: $ddq-danger;
-        width: 100%;
-      }
       .toggle-password {
         color: $white;
         position: absolute;
@@ -103,43 +101,21 @@
         font-size: 18px;
         user-select: none;
       }
-      .forgot-pass-option-container {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        justify-content: flex-end;
-        .wrong-pass{
-          color: #FF5B5B;
-          font-size: $font-size-ss;
-          font-weight: $font-weight-normal;
-          display: flex;
-          align-items: center;
-          img{
-            margin-right: 0.25rem;
-          }
-        }
-        .forgot-pass{
-          color: $primary;
-          font-size: $font-size-ss;
-          font-weight: $font-weight-normal;
-          cursor: pointer;
-        }
-      }
-      .bottom-disclaimer {
+      .bottom-disclaimer{
         display: flex;
         align-items: center;
         margin-top: 1rem;
         color: $white;
         font-size: $font-size-sm;
         font-weight: $font-weight-normal;
-        .login-text {
+        .login-text{
           font-weight: $font-weight-medium;
           color: $primary;
           margin-left: 0.25rem;
           cursor: pointer;
         }
       }
-      .submit-button-login {
+      .submit-button {
         padding: rem(12) rem(40);
         background-color: $primary;
         color: $white;
@@ -148,11 +124,10 @@
         cursor: pointer;
         font-size: $font-size-base;
         font-weight: $font-weight-medium;
-        margin-top: 1rem;
         width: 100%;
       }
 
-      .submit-button-login:hover {
+      .submit-button:hover {
         background-color: #61c3c5;
       }
       button:disabled {

@@ -1,110 +1,55 @@
-// .app-container {
-//   display: flex;
-//   height: 100vh;
-// }
-
-// .toggle-sidenav-button {
-//   position: absolute;
-//   bottom: 0px;
-//   height: 40px;
-//   padding: 0 10px;
-//   background-color: #007bff;
-//   color: #fff;
-//   border: none;
-//   border-radius: 4px;
-//   cursor: pointer;
-//   transition: left 0.3s ease;
-//   z-index: 100;
-
-//   &.open {
-//     left: 120px; // Adjust this value based on your sidebar width
-//   }
-
-//   &.closed {
-//     left: 0;
-//   }
-// }
-
-
-// .toggle-chatbot-button {
-//   position: absolute;
-//   top: 50%;
-//   right: 10px;
-//   transform: translateY(-50%);
-//   z-index: 100;
-//   padding: 8px 12px;
-//   background-color: #007bff;
-//   color: #fff;
-//   border: none;
-//   border-radius: 5px;
-//   cursor: pointer;
-// }
-
-// .toggle-chatbot-button.open {
-//   background-color: #28a745;
-// }
-
-// .toggle-chatbot-button.closed {
-//   background-color: #dc3545;
-// }
-
-// .chat-messages {
-//   flex: 1;
-//   overflow-y: auto;
-//   margin-bottom: 10px;
-// }
-
-// .chat-input {
-//   display: flex;
-//   gap: 10px;
-// }
-
-// .chat-input input {
-//   flex: 1;
-//   padding: 5px;
-// }
-
-// .chat-input button {
-//   padding: 5px 10px;
-// }
-
-
+@import "../../assets/variable.scss";
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 .layout {
   display: flex;
   height: 100%;
+  width: 100%;
 }
 
-.panel-content {
+.sidenav-dashboard-container {
+  transition: width 0.3s ease;
+  width: 22%; // Default width for the expanded sidebar
+  background-color: #333; // Sidebar background color, adjust as needed
   height: 100%;
-  overflow: auto;
-  background-color: #f8f9fa;
-}
-
-.placeholder {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+}
+
+.sidenav-dashboard-container.collapsed {
+  width: 5%; // Collapsed width for the sidebar
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1; // Takes up the remaining width
   height: 100%;
-  font-size: 18px;
-  color: #888;
 }
 
-.resize-handle {
-  width: 5px;
-  background-color: #ccc;
-  cursor: ew-resize;
+/* Header */
+.header {
+  background-color: $ddq-header;
+  padding: 1.5rem 1.25rem;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
 }
 
-.toggle-sidenav-button,
-.toggle-chatbot-button {
-  position: absolute;
-  top: 10px;
-  z-index: 10;
-  cursor: pointer;
+.chatbot-dashboard-container {
+  flex-grow: 1;
+  height: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+.cchatbot-dashboard-container.expanded {
+  margin-left: 22%; // When sidebar is collapsed, chatbot expands to take the full width
 }

@@ -1,0 +1,17 @@
+@import "../../assets/variable.scss";
+
+.header-container{
+    background: $ddq-header;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    .login-header{
+        display: flex;
+        align-items: center;
+        .separator{
+            color: rgba($color: #fff, $alpha: 0.3);
+        }
+    }
+}

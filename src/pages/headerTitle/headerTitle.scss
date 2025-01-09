@@ -1,0 +1,28 @@
+@import "../../assets/variable.scss";
+
+.header-box{
+    display: flex;
+    align-items: center;
+    .input-box{
+        width: 40%;
+    }
+    .header-input{
+        background: none;
+        border: none;
+        color: $white;
+        width: 70%;
+    }
+    .edit-btn{
+        background: none;
+        border: none;
+        margin-left: 0.25rem;
+        cursor: pointer;
+    }
+    .done-btn{
+        background: none;
+        border: none;
+        margin-left: 0.25rem;
+        cursor: pointer;
+        color: $primary;
+    }
+}

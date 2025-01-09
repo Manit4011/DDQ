@@ -1,0 +1,17 @@
+/* Utility functions
+ Import bootstrap functions and add to it */
+ @use "sass:math";
+ @import '~bootstrap/scss/functions';
+ 
+ /*  Convert pixels to rem */
+ @function rem($pixels) {
+   $remSize: math.div($pixels, 16);
+   @return #{$remSize}rem;
+ }
+ 
+ /* Converts rem to pixels */
+ @function pixels($rem) {
+   $pixelsize: $rem * 16;
+   @return #{$pixelsize}px;
+ }
+ 
