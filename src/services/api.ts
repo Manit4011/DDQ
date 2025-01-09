@@ -9,7 +9,7 @@ import { ChatApiResponse } from "../types/interface";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-//   timeout: 20000,
+  //   timeout: 20000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -47,3 +47,45 @@ export const postChat = async (data: any): Promise<ChatApiResponse> => {
     throw error;
   }
 };
+export const postFileToProcess = async (file: File, filePath: string): Promise<any> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("file_path", filePath);
+
+    const response = await apiClient.post("process_file", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Indicate a form-data request
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error posting file: ", error.message);
+    throw error;
+  }
+};
+
+export const uploadQuestionnaireFile = async (
+  file: File,
+  userId: string,
+  convId: string
+): Promise<any> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("user_id", userId);
+    formData.append("conv_id", convId);
+
+    const response = await apiClient.post("questionnaire", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error uploading file: ", error.message);
+    throw error;
+  }
+};
+

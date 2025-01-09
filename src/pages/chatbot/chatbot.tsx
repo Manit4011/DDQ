@@ -17,7 +17,7 @@ import UploadFile from "../../assets/icons/upload-file.svg";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useDropzone } from "react-dropzone";
 import Delete from "../../assets/icons/ddq-delete.svg";
-import { postChat } from "../../services/api";
+import { postChat, uploadQuestionnaireFile } from "../../services/api";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userInfo/selector";
 import Loader from "../../components/Loader";
@@ -45,11 +45,12 @@ const ChatBot: React.FC = () => {
   const [isFileUploaded, setIsFileUploaded] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const [file, setFile] = useState<File | undefined>(undefined);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
+
   const generateBotOptions = (userQuestion: string) => {
     const botResponses = [
       { id: 1, text: "Option 1: This is a response." },
@@ -61,6 +62,7 @@ const ChatBot: React.FC = () => {
   };
   const onDrop = useCallback((acceptedFiles: File[]) => {
     console.log("Accepted files:", acceptedFiles[0]);
+    setFile(acceptedFiles[0]);
     setIsFileUploaded(true);
     setFileName(acceptedFiles[0].name);
     setFileSize((acceptedFiles[0].size / 1024).toFixed(2));
@@ -101,19 +103,39 @@ const ChatBot: React.FC = () => {
   };
   const formatTextToHTML = (text: string) => {
     let formattedText = text.replace(/\n/g, "<br />");
-    formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    formattedText = formattedText.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
     formattedText = formattedText.replace(/- (.*?)(<br \/>|$)/g, "<li>$1</li>");
     formattedText = formattedText.replace(/(<li>.*?<\/li>)/g, "<ul>$1</ul>");
-  
+
     return formattedText;
   };
   const scrollToBottom = () => {
     if (messages.length > 0 && messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   };
   const handleUploadIconClick = () => {
     setIsUploadSelected(!isUploadSelected);
+  };
+
+  const handleProcessClick = async () => {
+    if (!file) {
+      console.error("No file selected!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await uploadQuestionnaireFile(file, user.user_id, "");
+      console.log("chat response: ", res);
+    } catch (error) {
+      console.error("Error fetching chat response:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSend = async () => {
@@ -137,13 +159,13 @@ const ChatBot: React.FC = () => {
           const botMessage: Message = { text: botAnswer, sender: "bot" };
           setMessages((prevMessages) => [...prevMessages, botMessage]);
         }
-        if(res.response == null){
+        if (res.response == null) {
           const botMessage: Message = { text: NO_INFO, sender: "bot" };
           setMessages((prevMessages) => [...prevMessages, botMessage]);
         }
       } catch (error) {
         console.error("Error fetching chat response:", error);
-      }finally {
+      } finally {
         setLoading(false);
       }
     }
@@ -170,10 +192,7 @@ const ChatBot: React.FC = () => {
       )}
       <div className="chatbot-messages" ref={messagesContainerRef}>
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className="message-bubble message"
-          >
+          <div key={index} className="message-bubble message">
             {message.sender === "user" ? (
               <div className="mesage-img">
                 <img src={UserLogo} />
@@ -186,14 +205,14 @@ const ChatBot: React.FC = () => {
             <div className="chat-text">
               {message.sender != "user" ? <div>Answer: </div> : ""}
               {message.sender === "bot" ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: sanitizeHTML(formatTextToHTML(message.text)),
-                }}
-              ></div>
-            ) : (
-              <div>{message.text}</div>
-            )}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeHTML(formatTextToHTML(message.text)),
+                  }}
+                ></div>
+              ) : (
+                <div>{message.text}</div>
+              )}
             </div>
           </div>
         ))}
@@ -228,8 +247,18 @@ const ChatBot: React.FC = () => {
                 </div>
               </div>
               <div className="align-items-center">
-                <button className="process-btn">{BUTTON_LABELS.process}</button>
-                <img src={Delete} alt="" className="cursor-pointer" />
+                <button className="process-btn" onClick={handleProcessClick}>
+                  {BUTTON_LABELS.process}
+                </button>
+                <img
+                  src={Delete}
+                  alt=""
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setFile(undefined);
+                    setIsFileUploaded(false);
+                  }}
+                />
               </div>
             </div>
           </div>
