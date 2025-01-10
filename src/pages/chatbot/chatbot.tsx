@@ -130,6 +130,7 @@ const ChatBot: React.FC = () => {
       return;
     }
     try {
+      dispatch(setTime({ lastModifiedTime: formatDateTime(new Date())}));
       setLoading(true);
       const res = await uploadQuestionnaireFile(file, user.user_id, "");
       console.log("chat response: ", res);
