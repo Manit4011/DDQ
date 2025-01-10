@@ -18,10 +18,11 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { useDropzone } from "react-dropzone";
 import Delete from "../../assets/icons/ddq-delete.svg";
 import { postChat, uploadQuestionnaireFile } from "../../services/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../features/userInfo/selector";
 import Loader from "../../components/Loader";
 import DOMPurify from "dompurify";
+import { setTime } from "../../features/lastModifiedSlice";
 
 interface Message {
   text: string;
@@ -35,6 +36,7 @@ interface BotResponse {
 
 const ChatBot: React.FC = () => {
   const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const [botOptions, setBotOptions] = useState<BotResponse[] | null>(null);
@@ -138,8 +140,21 @@ const ChatBot: React.FC = () => {
     }
   };
 
+  function formatDateTime(date: Date): string {
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+    const formattedDate: string = date.toLocaleDateString('en-US', options);
+
+    const hours: number = date.getHours();
+    const minutes: number = date.getMinutes();
+    const period: string = hours >= 12 ? 'PM' : 'AM';
+
+    const formattedTime: string = `${hours % 12 === 0 ? 12 : hours % 12}:${minutes.toString().padStart(2, '0')}${period}`;
+
+    return `${formattedDate.replace(',', '')} at ${formattedTime}`;
+}
   const handleSend = async () => {
     if (input.trim() !== "") {
+      dispatch(setTime({ lastModifiedTime: formatDateTime(new Date())}));
       if (!isChatStarted) setIsChatStarted(true);
       const userMessage: Message = { text: input, sender: "user" };
       setMessages([...messages, userMessage]);
