@@ -9,6 +9,28 @@
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 9999; /* Ensure it appears above all other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-items-center {
+    align-items: center;
+    display: flex;
+  }
+  .mt-16 {
+    margin-top: rem(16);
+  }
+  .ml-10 {
+    margin-left: rem(10);
+  }
 
   &.chat-started {
     .chatbot-heading,
@@ -18,14 +40,14 @@
 
     .chatbot-messages {
       flex-grow: 1;
-      width: 80%;
       overflow-y: auto;
       margin-top: 0;
+      padding-right: rem(24);
     }
 
     .chatbot-input {
       position: fixed;
-      bottom: 0;
+      bottom: 5px;
       width: 65%;
       display: flex;
       align-items: center;
@@ -56,33 +78,138 @@
   display: flex;
   flex-direction: column;
   width: 80%;
-  gap: 10px;
+  gap: rem(10);
   margin-top: 2rem;
-  max-height: 75%;
+  max-height: 73%;
   overflow-y: auto;
   scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: $scrollbar-1 $scrollbar-2;
+  scrollbar-width: none;
+  // scrollbar-color: $scrollbar-1 $scrollbar-2;
 }
 
 .message-bubble {
-  padding: 10px;
-  border-radius: 8px;
-  max-width: 80%;
+  padding: rem(10);
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.user-message {
+.message {
   color: $white;
   align-self: flex-start;
   font-size: $font-size-lg;
   font-weight: $font-weight-medium-bold;
 }
+.mesage-img{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+}
 
-.bot-message {
-  color: $white;
-  align-self: flex-start;
-  font-size: $font-size-lg;
-  font-weight: $font-weight-medium-bold;
+// .bot-message {
+//   color: $white;
+//   align-self: flex-start;
+//   font-size: $font-size-lg;
+//   font-weight: $font-weight-medium-bold;
+// }
+.chat-text {
+  margin-left: 0.75rem;
+  height: auto;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.chatbot-input-uploaded {
+  width: 80%;
+  background: $chatbot-input;
+  padding: 1.5rem;
+  border-radius: rem(24);
+  color: rgba($color: $white, $alpha: 0.7);
+  .file-uploaded-heading {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium-bold;
+  }
+  .file-uploaded-text-1 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-normal;
+  }
+  .file-uploaded-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .file-details-container {
+    display: flex;
+    align-items: center;
+  }
+  .file-name {
+    color: $white;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+  }
+  .process-btn {
+    background: none;
+    border: 1px solid $primary;
+    border-radius: rem(50);
+    color: $primary;
+    padding: rem(12) rem(28);
+    margin-right: rem(10);
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+  }
+}
+.note-text {
+  color: $red;
+}
+.chatbot-input-upload {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  background: $chatbot-input;
+  padding: 1.5rem;
+  border-radius: rem(24);
+  justify-content: space-between;
+  .upload-file-icon {
+    margin-right: rem(5);
+  }
+  .upload-container-1 {
+    display: flex;
+    align-items: center;
+  }
+  .upload-container-2 {
+    display: flex;
+    align-items: center;
+  }
+  .browse-file-btn {
+    background: $primary;
+    border: none;
+    border-radius: rem(50);
+    color: $white;
+    padding: rem(12) rem(28);
+    margin-right: rem(6);
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+  }
+  .upload-text-1 {
+    color: $white;
+    font-size: rem(20);
+    font-weight: $font-weight-medium-bold;
+  }
+  .upload-text-2 {
+    color: rgba($color: $white, $alpha: 0.7);
+    font-size: $font-size-ss;
+    font-weight: $font-weight-normal;
+  }
+  .circle-icon {
+    height: rem(8);
+  }
 }
 
 .chatbot-input {
@@ -92,7 +219,7 @@
   border-radius: rem(24);
   width: 80%;
   position: relative;
-  padding: 0.5rem;
+  padding: 1rem;
   transition: all 0.3s ease-in-out;
 
   .file-upload-icon {
@@ -130,7 +257,20 @@
     }
   }
 }
-
+.drop-files {
+  text-align: center;
+  width: 100%;
+  color: $white;
+}
+.upload-input {
+  position: "absolute";
+  top: 0;
+  left: 0;
+  width: "100%";
+  height: "100%";
+  opacity: 0;
+  cursor: "pointer";
+}
 .bot-options {
   display: flex;
   flex-direction: column;

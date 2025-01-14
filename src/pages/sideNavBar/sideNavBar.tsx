@@ -4,6 +4,8 @@ import botLogo from "../../assets/images/bot-logo.svg";
 import botIcon from "../../assets/icons/sidenav-bot.svg";
 import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
 import sidenavShowIcon from "../../assets/icons/arrow-right-icon.svg";
+import openSidenav from "../../assets/icons/open-arrow.svg";
+import closeSidenav from "../../assets/icons/close-arrow.svg";
 
 interface SideNavBarProps {
   onToggleSideNav: () => void;
@@ -81,7 +83,7 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
         className="toggle-arrow-button"
         onClick={onToggleSideNav} // Pass this function from the parent
       >
-        <i className="arrow-icon">{isCollapsed ? ">" : "<"}</i>
+        <i className="arrow-icon">{isCollapsed ? <img src={openSidenav} alt="" /> : <img src={closeSidenav} alt="" />}</i>
       </button>
     </div>
   );

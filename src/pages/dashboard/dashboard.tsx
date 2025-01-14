@@ -7,9 +7,12 @@ import Header from "../header/header";
 import { useNavigate } from "react-router-dom";
 import { getSession, logout } from "../../services/authenticate";
 import FileWindow from "../fileWindow/fileWindow";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../features/userInfo";
 
 const App: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false); // Sidebar collapse state
   const [isChatBotVisible, setIsChatBotVisible] = useState(true); // Visibility toggle for ChatBot
 
@@ -29,6 +32,7 @@ const App: React.FC = () => {
     getSession().then(
       session =>{
         console.log('session--',session);
+        dispatch(setUser({ username: session.attributes.name, user_id: session.attributes.sub}));
       }
     ).catch(err =>{
       console.log(err);

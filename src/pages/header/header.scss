@@ -1,17 +1,24 @@
 @import "../../assets/variable.scss";
 
-.header-container{
-    background: $ddq-header;
-    color: $white;
+.header-container {
+  background: $ddq-header;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  .login-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    .login-header{
-        display: flex;
-        align-items: center;
-        .separator{
-            color: rgba($color: #fff, $alpha: 0.3);
-        }
+    width: 35%;
+    .time-container {
+      width: 100%;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-normal;
+      color: rgba($color: $white, $alpha: 0.7);
     }
+    .separator {
+      color: rgba($color: #fff, $alpha: 0.3);
+    }
+  }
 }

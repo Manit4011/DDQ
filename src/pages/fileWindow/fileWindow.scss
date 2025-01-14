@@ -1,4 +1,14 @@
 @import "../../assets/variable.scss";
+.mt-10{
+  margin-top: rem(16);
+}
+.ml-10 {
+  margin-left: rem(10);
+}
+.align-items-center {
+  align-items: center;
+  display: flex;
+}
 .file-window {
   padding: 1rem;
   background-color: $secondary-ddq;
@@ -8,26 +18,119 @@
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 9999; /* Ensure it appears above all other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  
-  .file-grid {
-    display: grid;
-    height: 90%;
-    // grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    // gap: 10px;
-  }
-  
-  .file-item {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    width: 96%;
-    height: 82vh;
+  .upload-file-input {
+    position: "absolute";
+    top: 0;
+    left: 0;
+    width: "100%";
+    height: "100%";
+    opacity: 0;
+    cursor: "pointer";
   }
 
-  ag-theme-alpine{
-    height: 95%;
-    width: 100%;
+  .file-input-upload {
+    display: flex;
+    align-items: center;
+    width: 80%;
+    background: $chatbot-input;
+    padding: 1.5rem;
+    border-radius: rem(24);
+    justify-content: space-between;
+    .upload-file-icon {
+      margin-right: rem(5);
+    }
+    .upload-container-1 {
+      display: flex;
+      align-items: center;
+    }
+    .upload-container-2 {
+      display: flex;
+      align-items: center;
+    }
+    .browse-file-btn {
+      background: $primary;
+      border: none;
+      border-radius: rem(50);
+      color: $white;
+      padding: rem(12) rem(28);
+      margin-right: rem(6);
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+      cursor: pointer;
+    }
+    .upload-text-1 {
+      color: $white;
+      font-size: rem(20);
+      font-weight: $font-weight-medium-bold;
+    }
+    .upload-text-2 {
+      color: rgba($color: $white, $alpha: 0.7);
+      font-size: $font-size-ss;
+      font-weight: $font-weight-normal;
+    }
+    .circle-icon {
+      height: rem(8);
+    }
   }
+  .file-uploaded-container{
+    width: 80%;
+    background: $chatbot-input;
+    padding: 1.5rem;
+    border-radius: rem(24);
+    margin-top: rem(14);
+    .file-uploaded-heading{
+      font-size: $font-size-lg;
+      font-weight: $font-weight-medium-bold;
+      color: rgba($color: $white, $alpha: 0.7);
+    }
+    .files-uploaded-list {
+      width: 100%;
+      background: $chatbot-input;
+      border-radius: rem(24);
+      color: rgba($color: $white, $alpha: 0.7);
+      margin-top: rem(12);
+      .file-uploaded-text-1 {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-normal;
+      }
+      .single-file-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .file-details-container {
+        display: flex;
+        align-items: center;
+      }
+      .file-name {
+        color: $white;
+        font-size: $font-size-base;
+        font-weight: $font-weight-medium;
+      }
+      .process-btn {
+        background: none;
+        border: 1px solid $primary;
+        border-radius: rem(50);
+        color: $primary;
+        padding: rem(12) rem(28);
+        margin-right: rem(10);
+        font-size: $font-size-base;
+        font-weight: $font-weight-medium;
+        cursor: pointer;
+      }
+    }
+  }
+}
