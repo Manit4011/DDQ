@@ -398,13 +398,17 @@ const ChatBot: React.FC = () => {
               </div>
             ) : (
               <div className="chatbot-input">
-                <img
-                  className="file-upload-icon"
-                  src={fileUploadIcon}
-                  alt={ICON_ALTS.fileUpload}
-                  onClick={handleUploadIconClick}
-                  height={20}
-                />
+                {!globalMessages.gridData && (
+                  <Tooltip title="Upload File">
+                    <img
+                    className="file-upload-icon"
+                    src={fileUploadIcon}
+                    alt={ICON_ALTS.fileUpload}
+                    onClick={handleUploadIconClick}
+                    height={20}
+                  />
+                  </Tooltip>
+                )}
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
