@@ -4,6 +4,16 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  .panelResize {
+    color: $white;
+    height: rem(2);
+    cursor: col-resize;
+  }
+  .hidden-scroll {
+    overflow-y: auto; /* Enables vertical scrolling */
+    scrollbar-width: none; /* For Firefox: Hides scrollbar */
+    -ms-overflow-style: none;
+  }
 }
 
 .layout {
@@ -14,11 +24,12 @@
 
 .sidenav-dashboard-container {
   transition: width 0.3s ease;
-  width: 22%; // Default width for the expanded sidebar
+  width: 21%; // Default width for the expanded sidebar
   background-color: #333; // Sidebar background color, adjust as needed
   height: 100%;
   display: flex;
   flex-direction: column;
+  z-index: 99;
 }
 
 .sidenav-dashboard-container.collapsed {
@@ -35,7 +46,7 @@
 /* Header */
 .header {
   background-color: $ddq-header;
-  padding: 1.25rem 1.25rem;
+  padding: 1rem 1.25rem;
 
   h1 {
     margin: 0;
