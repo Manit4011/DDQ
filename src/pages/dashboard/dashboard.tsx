@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Panel, PanelGroup } from "react-resizable-panels";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import "./dashboard.scss";
 import SideNavBar from "../sideNavBar/sideNavBar";
 import ChatBot from "../chatbot/chatbot";
@@ -7,37 +7,50 @@ import Header from "../header/header";
 import { useNavigate } from "react-router-dom";
 import { getSession, logout } from "../../services/authenticate";
 import FileWindow from "../fileWindow/fileWindow";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../features/userInfo";
+import { selectpage } from "../../features/chatSlice/selector";
+import Grid from "../../components/TableComponent/grid";
+import { selectMessages } from "../../features/messagesSlice/selector";
 
 const App: React.FC = () => {
   const navigate = useNavigate();
+  const globalMessages = useSelector(selectMessages);
   const dispatch = useDispatch();
   const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false); // Sidebar collapse state
   const [isChatBotVisible, setIsChatBotVisible] = useState(true); // Visibility toggle for ChatBot
+  const chat = useSelector(selectpage);
 
-  // Handle logout
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-  const handleMainWindow = (tab: "chatbot" | "file-upload") =>{
-    if(tab === "chatbot"){
+  useEffect(() => {
+    if (chat.page == "chat") {
       setIsChatBotVisible(true);
-    }else{
+    } else {
       setIsChatBotVisible(false);
     }
-  }
-  useEffect(()=>{
-    getSession().then(
-      session =>{
-        console.log('session--',session);
-        dispatch(setUser({ username: session.attributes.name, user_id: session.attributes.sub}));
-      }
-    ).catch(err =>{
-      console.log(err);
-    })
-  }, [])
+  }, []);
+
+  const handleMainWindow = (tab: "chatbot" | "file-upload") => {
+    if (tab === "chatbot") {
+      setIsChatBotVisible(true);
+    } else {
+      setIsChatBotVisible(false);
+    }
+  };
+  useEffect(() => {
+    getSession()
+      .then((session) => {
+        console.log("session--", session);
+        dispatch(
+          setUser({
+            username: session.attributes.name,
+            user_id: session.attributes.sub,
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   // Toggle sidebar collapse
   const handleToggleSideNav = () => {
@@ -62,23 +75,46 @@ const App: React.FC = () => {
         <div className="main-content">
           {/* Header */}
           <div className="header">
-          <Header />
+            <Header />
           </div>
-
 
           {/* ChatBot */}
           {isChatBotVisible && (
-          <div
-            className={`chatbot-dashboard-container ${isSideNavCollapsed ? "expanded" : ""}`}
-          >
-            <ChatBot />
-          </div>
-        )} 
-        {!isChatBotVisible && (
-          <div  className={`chatbot-dashboard-container ${isSideNavCollapsed ? "expanded" : ""}`}>
-            <FileWindow/>
-          </div>
-        )}
+            <div
+              className={`chatbot-dashboard-container ${
+                isSideNavCollapsed ? "expanded" : ""
+              }`}
+            >
+              {globalMessages.gridData ? (
+                <PanelGroup direction="vertical">
+                  <Panel
+                    style={{ overflowY: "auto" }}
+                    defaultSize={50}
+                    minSize={20}
+                    maxSize={100}
+                    className="hidden-scroll"
+                  >
+                    <Grid gridData={globalMessages.gridData} />
+                  </Panel>
+                  <PanelResizeHandle className="panelResize" />
+                  <Panel className="hidden-scroll" minSize={20} maxSize={100}>
+                    <ChatBot />
+                  </Panel>
+                </PanelGroup>
+              ) : (
+                <ChatBot />
+              )}
+            </div>
+          )}
+          {!isChatBotVisible && (
+            <div
+              className={`chatbot-dashboard-container ${
+                isSideNavCollapsed ? "expanded" : ""
+              }`}
+            >
+              <FileWindow />
+            </div>
+          )}
         </div>
         {/* {isChatBotVisible && (
           <div
