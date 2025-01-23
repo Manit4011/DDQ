@@ -6,11 +6,14 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import userpool from "../../states/userpool";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
-import AuthModal from "../authModal/authModal";
-import { EMAIL_REGEX, PASS_REGEX } from "../../constants/constant";
+import CommonModal from "../commonModal/commonModal";
+import { EMAIL_REGEX, PASS_REGEX, REGISTERED_MESSAGE } from "../../constants/constant";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../../features/authSlice/selector";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const authInfo = useSelector(selectAuth);
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -25,7 +28,7 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const isAuthenticated = Boolean(sessionStorage.getItem("access-token"));
+    const isAuthenticated = Boolean(authInfo.access);
     if (isAuthenticated) {
       navigate("/dashboard");
     }
@@ -228,7 +231,7 @@ const Register: React.FC = () => {
           </div>
         </form>
       </div>
-      {openModal && <AuthModal closeModal={setOpenModal} />}
+      {openModal && <CommonModal closeModal={setOpenModal} message={REGISTERED_MESSAGE} title="Account Created!" type="auth"/>}
     </div>
   );
 };

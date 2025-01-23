@@ -1,0 +1,63 @@
+@import "../../assets/variable.scss";
+
+.common-modal-container {
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &.delete-transform{
+    transform: translate(-25%,-6%);
+  }
+  .common-modal-content {
+    margin: auto;
+    padding: 2rem;
+    max-width: 25rem;
+    text-align: center;
+    background: $chatbot-input;
+    box-shadow: $border-radius-base rgba(240, 242, 255, 0.2);
+    border-radius: $border-radius-base;
+    .modal-heading {
+      color: $white;
+      font-size: rem(24);
+      font-weight: $font-weight-medium-bold;
+      margin: 0.5rem 0;
+    }
+    .modal-text {
+      color: $white;
+      font-size: $font-size-base;
+      font-weight: $font-weight-normal;
+      margin: 0.5rem 0;
+    }
+    .delete-modal-actions{
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+    .submit-btn {
+      color: $white;
+      background: $primary;
+      border-radius: rem(50);
+      padding: rem(12) rem(28);
+      border: none;
+      margin: 0.5rem 0;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      background-color: #61c3c5;
+    }
+    .cancel-btn {
+      color: $primary;
+      background: none;
+      border-radius: rem(50);
+      padding: rem(12) rem(28);
+      border: 1px solid $primary;
+      margin: 0.5rem 0;
+      cursor: pointer;
+    }
+  }
+}

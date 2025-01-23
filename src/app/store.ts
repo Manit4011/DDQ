@@ -7,7 +7,7 @@ import storageSession from 'redux-persist/lib/storage/session';
 const persistConfig = {
   key: 'root', // Key for localStorage
   storage: storageSession,
-  whitelist: ['auth','user','messages','chat'],
+  whitelist: ['auth','user','messages','chat','lastModified'],
   // blacklist:[''],
 };
 const persistedReducer = persistReducer(persistConfig, createReducer());

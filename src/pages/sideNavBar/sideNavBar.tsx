@@ -22,7 +22,6 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
   onTabChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"chatbot" | "file-upload">(
     "chatbot"
   );
@@ -37,9 +36,6 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
     }
   },[])
 
-  const handleFileUploadClick = () => {
-    fileInputRef.current?.click();
-  };
 
   const handleNavigation = (tab: "chatbot" | "file-upload") => {
     setActiveTab(tab);

@@ -26,21 +26,12 @@ import { setTime } from "../../features/lastModifiedSlice";
 import { setGlobalMessages, setGridData } from "../../features/messagesSlice";
 import { selectMessages } from "../../features/messagesSlice/selector";
 import { selectpage } from "../../features/chatSlice/selector";
-import { ChatResponse } from "../../types/interface";
+import { BotResponse, ChatResponse, Message } from "../../types/interface";
 import { v4 as uuidv4 } from "uuid";
 import SelectAnswer from "../../assets/icons/select-answer.svg";
 import Tooltip from "@mui/material/Tooltip";
 import ExpandIcon from "../../assets/icons/expand-icon.svg";
 
-interface Message {
-  text: string;
-  sender: "user" | "bot";
-}
-
-interface BotResponse {
-  id: string;
-  text: string;
-}
 
 const ChatBot: React.FC = () => {
   const user = useSelector(selectUser);
@@ -66,7 +57,7 @@ const ChatBot: React.FC = () => {
         setIsChatStarted(true);
       }
     }
-  }, [messages]);
+  }, [globalMessages.messages]);
   useEffect(() => {
     setMessages(() => globalMessages.messages);
   }, []);
@@ -149,15 +140,25 @@ const ChatBot: React.FC = () => {
     try {
       dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
       setLoading(true);
-      const res = await uploadQuestionnaireFile(file, user.user_id, "");
-      dispatch(setGridData({ data: "here is the response!" }));
-      console.log("chat response: ", res, globalMessages.gridData);
+      const res = await uploadQuestionnaireFile(file, user.user_id, "").then((res) => {
+        let parsedData = [];
+        try {
+          if (typeof res.data === "string") {
+            parsedData = JSON.parse(res.data);
+          } else if (Array.isArray(res.data)) {
+            parsedData = res.data;
+          } else {
+            console.error("Unexpected data format in response");
+          }
+        } catch (parseError) {
+          console.error("Error parsing response data:", parseError);
+        }
+        dispatch(setGridData(parsedData));
+      });
     } catch (error) {
       console.error("Error fetching chat response:", error);
     } finally {
       setLoading(false);
-      dispatch(setGridData({ data: "here is the response!" }));
-      console.log("chat response: ", globalMessages.gridData);
     }
   };
 
@@ -186,7 +187,6 @@ const ChatBot: React.FC = () => {
       const userMessage: Message = { text: input, sender: "user" };
       setMessages([...messages, userMessage]);
       setInput("");
-      // generateBotOptions(input);
       const data = {
         user_id: user.user_id,
         conv_id: "",
@@ -195,7 +195,6 @@ const ChatBot: React.FC = () => {
       try {
         setLoading(true);
         const res = await postChat(data).then();
-        console.log("chat response: ", res.response.length);
         const botAnswer = res.response[0]?.answer;
         let botMessage: Message;
         if (res.response.length == 1) {
@@ -207,7 +206,6 @@ const ChatBot: React.FC = () => {
           }
           setMessages((prevMessages) => {
             const newMessages = [...prevMessages, botMessage];
-            // Dispatch the updated messages to the global state
             dispatch(setGlobalMessages(newMessages));
             return newMessages;
           });
@@ -233,7 +231,7 @@ const ChatBot: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <div
         className={`chatbot-container ${isChatStarted ? "chat-started" : ""}`}
       >
@@ -428,7 +426,7 @@ const ChatBot: React.FC = () => {
           </>
         )}
       </div>
-    </React.Fragment>
+    </>
   );
 };
 

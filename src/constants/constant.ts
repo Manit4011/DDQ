@@ -29,6 +29,7 @@ export const CHATBOT_MESSAGES = {
   };
   export const MAX_FILE_SIZE = 200 * 1024 * 1024;
   export const REGISTERED_MESSAGE = 'You have successfully registered. Please wait for the further confirmation to login in your account.';
+  export const DELETE_MESSAGE = 'Are you sure, you want to delete this?';
   export const API_BASE_URL = "http://52.66.10.81:5004/";
   export const NO_INFO = "No Information Found! Please try again.";
   
