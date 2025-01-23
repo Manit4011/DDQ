@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Skeleton } from "@mui/material";
 import "./grid.scss";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
@@ -6,63 +6,75 @@ import UserLogo from "../../assets/icons/user-logo.svg";
 import ExportIcon from "../../assets/icons/export-icon.svg";
 import ExpandIcon from "../../assets/icons/expand-icon.svg";
 import Tooltip from "@mui/material/Tooltip";
+import { useSelector } from "react-redux";
+import { selectMessages } from "../../features/messagesSlice/selector";
 
-interface GridProps {
-  gridData: any;
-}
-const Grid: React.FC<GridProps> = ({ gridData }) => {
+const Grid: React.FC = () => {
+  const globalMessages = useSelector(selectMessages);
+  const formattedData = useMemo(() => {
+    return globalMessages.gridData.map((item: any, index: number) => {
+      const answers = [item.Answer_1, item.Answer_2]
+        .filter((answer) => answer)
+        .map((answer) => `• ${answer}`)
+        .join("\n");
+  
+      const referenceStatements = [item.Reference_statement_1, item.Reference_statement_2]
+        .filter((statement) => statement)
+        .map((statement) => `• ${statement}`)
+        .join("\n");
+  
+      const references = [item.References_1, item.References_2]
+        .filter((reference) => reference) // Remove null or undefined references
+        .map((reference) => `• ${reference}`) // Format references as bullet points
+        .join("\n"); // Join with a newline for display
+  
+      return {
+        id: index,
+        sno: index + 1,
+        question: item.question,
+        answerText: answers || "N/A",
+        referenceStatement: referenceStatements || "N/A",
+        references: references || "N/A",
+      };
+    });
+  }, [globalMessages.gridData]);
+  
+
   useEffect(() => {
-    console.log("inside grid---", gridData);
-  }, []);
-  const columns: GridColDef[] = [
-    { field: "sno", headerName: "S.No.", minWidth: 50, flex: 0.5 },
-    { field: "questions", headerName: "Questions", flex: 1 },
-    { field: "answers", headerName: "Answers", flex: 1.5 },
-    { field: "metadata", headerName: "Metadata", flex: 1 },
-  ];
+    console.log('inside use eff-', globalMessages.gridData);
+  }, [globalMessages.gridData]); 
 
-  const rows: GridRowsProp = [
+  const columns: GridColDef[] = [
+    { field: "sno", headerName: "S.No.", width: 100 },
+    { field: "question", headerName: "Question", flex: 1 },
     {
-      id: 1,
-      sno: 1,
-      questions: "When was the company founded?",
-      answers: "Gemini Solutions was founded in 2012.",
-      metadata: "Lorem Ipsum",
+      field: "answerText",
+      headerName: "Answer",
+      flex: 1.5,
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "pre-line" }}>{params.value}</div>
+      ),
     },
     {
-      id: 2,
-      sno: 2,
-      questions: "Can you provide the financial statements?",
-      answers:
-        "Bill Gates was the company's long-time CEO and is still associated with Microsoft through his foundation, the Bill & Melinda Gates Foundation.",
-      metadata: "Lorem Ipsum",
+      field: "referenceStatement",
+      headerName: "Reference Statement",
+      flex: 1.5,
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "pre-line" }}>{params.value}</div>
+      ),
     },
     {
-      id: 3,
-      sno: 3,
-      questions: "Lorem Ipsum is simply dummy text.",
-      answers: "Satya Nadella became CEO in 2014",
-      metadata: "Lorem Ipsum",
-    },
-    {
-      id: 4,
-      sno: 4,
-      questions: "Acquisitions",
-      answers:
-        "Microsoft is heavily involved in the gaming industry through Xbox and the acquisition of major game studios.",
-      metadata: "Lorem Ipsum",
-    },
-    {
-      id: 5,
-      sno: 5,
-      questions: "When was the company founded?",
-      answers: "Gemini Solutions was founded in 2012.",
-      metadata: "Lorem Ipsum",
+      field: "references",
+      headerName: "References",
+      flex: 1.5,
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "pre-line" }}>{params.value}</div>
+      ), // Render cell with line breaks
     },
   ];
 
   return (
-    <React.Fragment>
+    <>
       <div className="grid-container">
         <div className="grid-container-heading">
           <div className="align-items-center">
@@ -82,7 +94,7 @@ const Grid: React.FC<GridProps> = ({ gridData }) => {
           </div>
         </div>
         <DataGrid
-          rows={rows}
+          rows={formattedData}
           columns={columns}
           autoHeight
           getRowHeight={() => "auto"}
@@ -103,8 +115,8 @@ const Grid: React.FC<GridProps> = ({ gridData }) => {
               fontSize: "1rem",
               fontWeight: "400",
               color: "#ffffffe6",
-              whiteSpace: "normal",
-              wordWrap: "break-word",
+              whiteSpace: "pre-line", // Preserve line breaks for bullet points
+              wordWrap: "break-word", // Ensure long words wrap properly
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#444457 !important",
@@ -121,7 +133,7 @@ const Grid: React.FC<GridProps> = ({ gridData }) => {
           }}
         />
       </div>
-    </React.Fragment>
+    </>
   );
 };
 

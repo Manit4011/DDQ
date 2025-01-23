@@ -16,8 +16,11 @@ const lastModifiedSlice = createSlice({
     reducers: {
         setTime(state, action: PayloadAction<LastModifiedData>){
             state.lastModifiedTime = action.payload.lastModifiedTime;
+        },
+        resetLastModified(state){
+          state.lastModifiedTime = initialState.lastModifiedTime;
         }
     }
 })
-export const { setTime } = lastModifiedSlice.actions;
+export const { setTime, resetLastModified } = lastModifiedSlice.actions;
 export default lastModifiedSlice.reducer;

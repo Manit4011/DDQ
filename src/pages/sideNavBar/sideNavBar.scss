@@ -21,6 +21,16 @@
     img {
       margin-right: 10px;
     }
+    .bold-text{
+      font-size: rem(24);
+      font-weight: $font-weight-bold;
+      color: $white;
+    }
+    .normal-text{
+      font-size: rem(24);
+      font-weight: $font-weight-medium;
+      color: rgba($color: $white, $alpha: 0.9);
+    }
 
     .bold-text, .normal-text {
       display: inline-block;

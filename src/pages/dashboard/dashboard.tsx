@@ -94,7 +94,7 @@ const App: React.FC = () => {
                     maxSize={100}
                     className="hidden-scroll"
                   >
-                    <Grid gridData={globalMessages.gridData} />
+                    <Grid />
                   </Panel>
                   <PanelResizeHandle className="panelResize" />
                   <Panel className="hidden-scroll" minSize={20} maxSize={100}>

@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { API_BASE_URL } from "../constants/constant";
-import { ChatApiResponse } from "../types/interface";
+import { ChatApiResponse, QuestionnaireResponse } from "../types/interface";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -70,7 +70,7 @@ export const uploadQuestionnaireFile = async (
   file: File,
   userId: string,
   convId: string
-): Promise<any> => {
+): Promise<QuestionnaireResponse> => {
   try {
     const formData = new FormData();
     formData.append("file", file);
