@@ -13,12 +13,10 @@ const messageSlice = createSlice({
     initialState,
     extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
     reducers: {
-        setGlobalMessages(state, action: PayloadAction<Message[]>) {
+        addGlobalMessages(state, action: PayloadAction<Message[]>) {
             state.messages = action.payload;
         },
         setGridData(state, action: PayloadAction<QuestionData[]>){
-            console.log('inside setgrid--',action.payload);
-            
             state.gridData = action.payload;
         },
         deleteChat(state){
@@ -28,5 +26,5 @@ const messageSlice = createSlice({
     },
 })
 
-export const { setGlobalMessages, setGridData, deleteChat } = messageSlice.actions;
+export const { addGlobalMessages, setGridData, deleteChat } = messageSlice.actions;
 export default messageSlice.reducer;
