@@ -23,7 +23,7 @@ import { selectUser } from "../../features/userInfo/selector";
 import Loader from "../../components/Loader";
 import DOMPurify from "dompurify";
 import { setTime } from "../../features/lastModifiedSlice";
-import { setGlobalMessages, setGridData } from "../../features/messagesSlice";
+import { addGlobalMessages, setGridData } from "../../features/messagesSlice";
 import { selectMessages } from "../../features/messagesSlice/selector";
 import { selectpage } from "../../features/chatSlice/selector";
 import { BotResponse, ChatResponse, Message } from "../../types/interface";
@@ -37,7 +37,6 @@ const ChatBot: React.FC = () => {
   const user = useSelector(selectUser);
   const globalMessages = useSelector(selectMessages);
   const dispatch = useDispatch();
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const [botOptions, setBotOptions] = useState<BotResponse[] | null>(null);
   const [isChatStarted, setIsChatStarted] = useState<boolean>(false);
@@ -53,14 +52,13 @@ const ChatBot: React.FC = () => {
   useEffect(() => {
     if (chat.page == "chat") {
       scrollToBottom();
-      if (messages.length) {
+      if (globalMessages.messages.length) {
         setIsChatStarted(true);
+      }else{
+        setIsChatStarted(false);
       }
     }
   }, [globalMessages.messages]);
-  useEffect(() => {
-    setMessages(() => globalMessages.messages);
-  }, []);
 
   const generateBotOptions = (answers: ChatResponse[]) => {
     const botResponses = answers.map((answer) => ({
@@ -123,7 +121,7 @@ const ChatBot: React.FC = () => {
     return formattedText;
   };
   const scrollToBottom = () => {
-    if (messages.length > 0 && messagesContainerRef.current) {
+    if (globalMessages.messages.length > 0 && messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
@@ -185,48 +183,43 @@ const ChatBot: React.FC = () => {
       dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
       if (!isChatStarted) setIsChatStarted(true);
       const userMessage: Message = { text: input, sender: "user" };
-      setMessages([...messages, userMessage]);
+      const updatedMessages = [...globalMessages.messages, userMessage];
+      dispatch(addGlobalMessages(updatedMessages));
       setInput("");
       const data = {
         user_id: user.user_id,
         conv_id: "",
         prompt: input,
       };
-      try {
-        setLoading(true);
-        const res = await postChat(data).then();
-        const botAnswer = res.response[0]?.answer;
-        let botMessage: Message;
-        if (res.response.length == 1) {
-          if (botAnswer) {
-            botMessage = { text: botAnswer, sender: "bot" };
+      setLoading(true);
+      postChat(data)
+        .then((res) => {
+          const botAnswer = res.response[0]?.answer;
+          let botMessage: Message;
+          if (res.response.length === 1) {
+            if (botAnswer) {
+              botMessage = { text: botAnswer, sender: "bot" };
+            } else {
+              botMessage = { text: NO_INFO, sender: "bot" };
+            }
+            const finalMessages = [...updatedMessages, botMessage];
+            dispatch(addGlobalMessages(finalMessages));
+          } else {
+            generateBotOptions(res.response);
           }
-          if (res.response == null) {
-            botMessage = { text: NO_INFO, sender: "bot" };
-          }
-          setMessages((prevMessages) => {
-            const newMessages = [...prevMessages, botMessage];
-            dispatch(setGlobalMessages(newMessages));
-            return newMessages;
-          });
-        } else {
-          generateBotOptions(res.response);
-        }
-      } catch (error) {
-        console.error("Error fetching chat response:", error);
-      } finally {
-        setLoading(false);
-      }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching chat response:", error);
+          setLoading(false);
+        });
     }
   };
 
   const handleOptionSelect = (option: BotResponse) => {
     const botMessage: Message = { text: option.text, sender: "bot" };
-    setMessages((prevMessages) => {
-      const newMessages = [...prevMessages, botMessage];
-      dispatch(setGlobalMessages(newMessages));
-      return newMessages;
-    });
+    const newMessages = [...globalMessages.messages, botMessage];
+    dispatch(addGlobalMessages(newMessages));
     setBotOptions(null);
   };
 
@@ -261,7 +254,7 @@ const ChatBot: React.FC = () => {
           }
           ref={messagesContainerRef}
         >
-          {messages.map((message, index) => (
+          {globalMessages.messages.map((message, index) => (
             <div key={index} className="message-bubble message">
               {message.sender === "user" ? (
                 <div className="mesage-img">
