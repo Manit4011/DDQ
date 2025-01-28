@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore,  PERSIST,  PURGE, REHYDRATE, } from "redux-persist";
-import storage from 'redux-persist/lib/storage'; // Uses localStorage
 import { createReducer } from "./rootReducer";
 import storageSession from 'redux-persist/lib/storage/session';
 
