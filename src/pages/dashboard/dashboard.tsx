@@ -4,8 +4,7 @@ import "./dashboard.scss";
 import SideNavBar from "../sideNavBar/sideNavBar";
 import ChatBot from "../chatbot/chatbot";
 import Header from "../header/header";
-import { useNavigate } from "react-router-dom";
-import { getSession, logout } from "../../services/authenticate";
+import { getSession } from "../../services/authenticate";
 import FileWindow from "../fileWindow/fileWindow";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../features/userInfo";
@@ -14,7 +13,6 @@ import Grid from "../../components/TableComponent/grid";
 import { selectMessages } from "../../features/messagesSlice/selector";
 
 const App: React.FC = () => {
-  const navigate = useNavigate();
   const globalMessages = useSelector(selectMessages);
   const dispatch = useDispatch();
   const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false); // Sidebar collapse state
@@ -22,12 +20,12 @@ const App: React.FC = () => {
   const chat = useSelector(selectpage);
 
   useEffect(() => {
-    if (chat.page == "chat") {
+    if (chat.page === "chat") {
       setIsChatBotVisible(true);
     } else {
       setIsChatBotVisible(false);
     }
-  }, []);
+  }, [chat.page]);
 
   const handleMainWindow = (tab: "chatbot" | "file-upload") => {
     if (tab === "chatbot") {

@@ -20,22 +20,8 @@ const FileWindow: React.FC = () => {
   const [fileSize, setFileSize] = useState<string>("");
   const [file, setFile] = useState<File | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
-  const [rowData] = useState([
-    { id: 1, name: "John Doe", age: 28, country: "USA" },
-    { id: 2, name: "Jane Smith", age: 34, country: "Canada" },
-    { id: 3, name: "Michael Johnson", age: 45, country: "UK" },
-    { id: 4, name: "Emily Davis", age: 22, country: "Australia" },
-  ]);
-
-  const [columnDefs] = useState<ColDef[]>([
-    { field: "id", headerName: "ID", sortable: true, filter: true },
-    { field: "name", headerName: "Name", sortable: true, filter: true },
-    { field: "age", headerName: "Age", sortable: true, filter: true },
-    { field: "country", headerName: "Country", sortable: true, filter: true },
-  ]);
 
   const handleProcessClick = async () => {
-    console.log("processClick--");
     if (!file) {
       console.error("No file selected!");
       return;

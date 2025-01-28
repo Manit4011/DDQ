@@ -1,6 +1,5 @@
 import React, { FormEvent, useState } from "react";
 import "./resetPass.scss";
-import { useNavigate } from "react-router-dom";
 import botLogo from "../../assets/images/bot-logo.svg";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";

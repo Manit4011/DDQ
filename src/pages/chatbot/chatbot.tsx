@@ -50,7 +50,7 @@ const ChatBot: React.FC = () => {
   const chat = useSelector(selectpage);
 
   useEffect(() => {
-    if (chat.page == "chat") {
+    if (chat.page === "chat") {
       scrollToBottom();
       if (globalMessages.messages.length) {
         setIsChatStarted(true);
@@ -58,7 +58,7 @@ const ChatBot: React.FC = () => {
         setIsChatStarted(false);
       }
     }
-  }, [globalMessages.messages]);
+  }, [globalMessages.messages, chat.page]);
 
   const generateBotOptions = (answers: ChatResponse[]) => {
     const botResponses = answers.map((answer) => ({
@@ -258,15 +258,15 @@ const ChatBot: React.FC = () => {
             <div key={index} className="message-bubble message">
               {message.sender === "user" ? (
                 <div className="mesage-img">
-                  <img src={UserLogo} />
+                  <img src={UserLogo} alt="userlogo" />
                 </div>
               ) : (
                 <div className="mesage-img">
-                  <img src={ChatbotAnswer} />
+                  <img src={ChatbotAnswer}  alt="chhatbotanswer"/>
                 </div>
               )}
               <div className="chat-text">
-                {message.sender != "user" ? <div>Answer: </div> : ""}
+                {message.sender !== "user" ? <div>Answer: </div> : ""}
                 {message.sender === "bot" ? (
                   <div
                     dangerouslySetInnerHTML={{
@@ -289,7 +289,7 @@ const ChatBot: React.FC = () => {
                 >
                   <div className="option-internal-container mb-10 ml-10">
                     <div className="option-img-container mb-10">
-                      <img src={ChatbotAnswer} className="mr-10" />
+                      <img src={ChatbotAnswer} className="mr-10"  alt="chatbotanswer"/>
                       Answer:
                     </div>
                     <div
@@ -318,7 +318,7 @@ const ChatBot: React.FC = () => {
               </div>
               <div className="file-uploaded-container mt-16">
                 <div className="file-details-container">
-                  <img src={fileUploadIcon} alt="" height={20} />
+                  <img src={fileUploadIcon} alt="upload" height={20} />
                   <div className="ml-10">
                     <div className="file-name">{fileName}</div>
                     <div className="file-uploaded-text-1">{fileSize} Kb</div>
@@ -330,7 +330,7 @@ const ChatBot: React.FC = () => {
                   </button>
                   <img
                     src={Delete}
-                    alt=""
+                    alt="delete"
                     className="cursor-pointer"
                     onClick={() => {
                       setFile(undefined);
@@ -378,7 +378,7 @@ const ChatBot: React.FC = () => {
                       </button>
                       <img
                         src={UploadCross}
-                        alt=""
+                        alt="cross"
                         height={40}
                         onClick={handleUploadIconClick}
                         className="cursor-pointer"

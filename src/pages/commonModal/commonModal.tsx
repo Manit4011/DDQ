@@ -20,7 +20,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <div className={`common-modal-container ${type == 'delete' ? "delete-transform" : ""}`}>
+    <div className={`common-modal-container ${type === 'delete' ? "delete-transform" : ""}`}>
       <div className="common-modal-content">
         {type === "auth" && (
           <div className="auth-img">

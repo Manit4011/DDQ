@@ -21,7 +21,6 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
   isCollapsed,
   onTabChange,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<"chatbot" | "file-upload">(
     "chatbot"
   );
@@ -29,12 +28,12 @@ const SideNavBar: React.FC<SideNavBarProps> = ({
   const chatWindow= useSelector(selectpage); 
 
   useEffect(()=>{
-    if(chatWindow.page == 'chat'){
+    if(chatWindow.page === 'chat'){
       setActiveTab('chatbot');
     }else{
       setActiveTab('file-upload');
     }
-  },[])
+  },[chatWindow.page])
 
 
   const handleNavigation = (tab: "chatbot" | "file-upload") => {
