@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from "react";
-import { Skeleton } from "@mui/material";
 import "./grid.scss";
-import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import UserLogo from "../../assets/icons/user-logo.svg";
 import ExportIcon from "../../assets/icons/export-icon.svg";
 import ExpandIcon from "../../assets/icons/expand-icon.svg";

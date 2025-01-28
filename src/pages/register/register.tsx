@@ -25,7 +25,6 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const isAuthenticated = Boolean(authInfo.access);
@@ -220,7 +219,7 @@ const Register: React.FC = () => {
           ) : (
             ""
           )}
-          <button type="submit" className="submit-button" disabled={loading}>
+          <button type="submit" className="submit-button">
             Register
           </button>
           <div className="bottom-disclaimer">

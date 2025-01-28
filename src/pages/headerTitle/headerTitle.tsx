@@ -3,7 +3,7 @@ import "./headerTitle.scss";
 import EditIcon from "../../assets/icons/ddq-edit.svg";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useDispatch, useSelector } from "react-redux";
-import { setPage, setChatName } from "../../features/chatSlice";
+import { setChatName } from "../../features/chatSlice";
 import { selectpage } from "../../features/chatSlice/selector";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -16,14 +16,14 @@ const HeaderTitle: React.FC = () => {
 
   useEffect(() => {
     setLocalChatName(
-      windowName.page == "chat" ? "Chatbot" : "File Upload & Processing"
+      windowName.page === "chat" ? "Chatbot" : "File Upload & Processing"
     );
     dispatch(
       setChatName(
-        windowName.page == "chat" ? "Chatbot" : "File Upload & Processing"
+        windowName.page === "chat" ? "Chatbot" : "File Upload & Processing"
       )
     );
-  }, [windowName.page]);
+  }, [windowName.page, dispatch]);
 
   const handleEditClick = () => {
     setIsChatDisabled(true); // Enable the input

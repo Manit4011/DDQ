@@ -1,8 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import botLogo from "../../assets/images/bot-logo.svg";
-import crossIcon from "../../assets/icons/red-cross-ddq.svg";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { authenticate } from "../../services/authenticate";
@@ -24,7 +23,7 @@ const Login: React.FC = () => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, []);
+  }, [navigate]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

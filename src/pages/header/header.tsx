@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./header.scss";
 import HeaderTitle from "../headerTitle/headerTitle";
 import LoginHeader from "../loginheader/loginHeader";
@@ -28,7 +28,7 @@ const Header: React.FC = () => {
     <div className="header-container">
       <HeaderTitle />
       <div className="login-header">
-        {lastModified != null && (
+        {lastModified !== null && (
           <span className="time-container">{lastModified.lastModifiedTime}</span>
         )}
         {(globalMessages.gridData || globalMessages.messages.length != 0) && (
