@@ -51,6 +51,12 @@ const ChatBot: React.FC = () => {
 
   useEffect(() => {
     if (chat.page === "chat") {
+      const scrollToBottom = () => {
+        if (globalMessages.messages.length > 0 && messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop =
+            messagesContainerRef.current.scrollHeight;
+        }
+      };
       scrollToBottom();
       if (globalMessages.messages.length) {
         setIsChatStarted(true);
@@ -59,7 +65,7 @@ const ChatBot: React.FC = () => {
       }
     }
     // @ts-ignore: Ignoring TypeScript error for the dependency array
-  }, [globalMessages.messages, chat.page, scrollToBottom]);
+  }, [globalMessages.messages, chat.page, messagesContainerRef]);
 
   const generateBotOptions = (answers: ChatResponse[]) => {
     const botResponses = answers.map((answer) => ({
@@ -120,12 +126,6 @@ const ChatBot: React.FC = () => {
     formattedText = formattedText.replace(/(<li>.*?<\/li>)/g, "<ul>$1</ul>");
 
     return formattedText;
-  };
-  const scrollToBottom = () => {
-    if (globalMessages.messages.length > 0 && messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
-    }
   };
   const handleUploadIconClick = () => {
     setIsUploadSelected(!isUploadSelected);
