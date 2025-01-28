@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -10,7 +10,6 @@ import Register from "./pages/register/register";
 import Login from "./pages/login/login";
 import ForgotPass from "./pages/forgotPass/forgotPass";
 import ResetPass from "./pages/resetPass/resetPass";
-import userpool from "./states/userpool";
 import AuthRoute from "./pages/authRoute/authRoute";
 
 const App: React.FC = () => {
