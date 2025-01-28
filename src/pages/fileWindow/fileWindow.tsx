@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { ColDef } from "ag-grid-community";
 import "./fileWindow.scss";
 import {
   BUTTON_LABELS,

@@ -31,7 +31,7 @@ const Header: React.FC = () => {
         {lastModified !== null && (
           <span className="time-container">{lastModified.lastModifiedTime}</span>
         )}
-        {(globalMessages.gridData || globalMessages.messages.length != 0) && (
+        {(globalMessages.gridData || globalMessages.messages.length !== 0) && (
           <Tooltip title="Clear chat" placement="bottom">
             <span className="clear-chat-icon"><img src={Delete} alt="" height={18} onClick={handleDeleteClick} /></span>
           </Tooltip>

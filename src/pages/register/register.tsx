@@ -31,7 +31,7 @@ const Register: React.FC = () => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, []);
+  }, [authInfo.access, navigate]);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

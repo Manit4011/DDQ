@@ -58,6 +58,7 @@ const ChatBot: React.FC = () => {
         setIsChatStarted(false);
       }
     }
+    // @ts-ignore: Ignoring TypeScript error for the dependency array
   }, [globalMessages.messages, chat.page]);
 
   const generateBotOptions = (answers: ChatResponse[]) => {
@@ -153,6 +154,7 @@ const ChatBot: React.FC = () => {
         }
         dispatch(setGridData(parsedData));
       });
+      console.log(res);
     } catch (error) {
       console.error("Error fetching chat response:", error);
     } finally {
