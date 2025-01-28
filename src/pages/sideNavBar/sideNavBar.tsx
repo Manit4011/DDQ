@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./sideNavBar.scss";
 import botLogo from "../../assets/images/bot-logo.svg";
 import botIcon from "../../assets/icons/sidenav-bot.svg";
