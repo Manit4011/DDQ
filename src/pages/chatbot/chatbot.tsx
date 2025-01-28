@@ -59,7 +59,7 @@ const ChatBot: React.FC = () => {
       }
     }
     // @ts-ignore: Ignoring TypeScript error for the dependency array
-  }, [globalMessages.messages, chat.page]);
+  }, [globalMessages.messages, chat.page, scrollToBottom]);
 
   const generateBotOptions = (answers: ChatResponse[]) => {
     const botResponses = answers.map((answer) => ({

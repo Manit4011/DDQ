@@ -48,7 +48,7 @@ const App: React.FC = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [dispatch]);
 
   // Toggle sidebar collapse
   const handleToggleSideNav = () => {
