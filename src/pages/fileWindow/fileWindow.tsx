@@ -11,6 +11,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
 import Delete from "../../assets/icons/ddq-delete.svg";
 import { postFileToProcess } from "../../services/api";
+import LinearProgress from '@mui/material/LinearProgress';
 
 const FileWindow: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -133,15 +134,23 @@ const FileWindow: React.FC = () => {
                   </div>
                 </div>
                 <div className="align-items-center">
-                  <button 
-                    className="process-btn"
-                    onClick={() => handleProcessClick(uploadedFile)}
-                    disabled={processingFiles.has(uploadedFile.name)}
-                  >
-                    {processingFiles.has(uploadedFile.name) 
-                      ? 'Processing...' 
-                      : BUTTON_LABELS.process}
-                  </button>
+                  {processingFiles.has(uploadedFile.name) ? (
+                    <div style={{ width: '100px', marginRight: '10px' }}>
+                      <LinearProgress sx={{ 
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: '#38a3a5'
+                        },
+                        backgroundColor: '#38a3a580'
+                      }} />
+                    </div>
+                  ) : (
+                    <button 
+                      className="process-btn"
+                      onClick={() => handleProcessClick(uploadedFile)}
+                    >
+                      {BUTTON_LABELS.process}
+                    </button>
+                  )}
                   <img
                     src={Delete}
                     alt=""
