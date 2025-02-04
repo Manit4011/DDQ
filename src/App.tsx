@@ -11,27 +11,43 @@ import Login from "./pages/login/login";
 import ForgotPass from "./pages/forgotPass/forgotPass";
 import ResetPass from "./pages/resetPass/resetPass";
 import AuthRoute from "./pages/authRoute/authRoute";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPass />} />
-        <Route path="/reset-password" element={<ResetPass />} />
-        <Route
-          path="/dashboard"
-          element={
-            <AuthRoute>
-              <Dashboard />
-            </AuthRoute>
-          }
-        /> 
-        {/* Add more routes here, e.g., <Route path="/dashboard" element={<Dashboard />} /> */}
-      </Routes>
-    </Router>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPass />} />
+          <Route path="/reset-password" element={<ResetPass />} />
+          <Route
+            path="/dashboard"
+            element={
+              <AuthRoute>
+                <Dashboard />
+              </AuthRoute>
+            }
+          /> 
+          {/* Add more routes here, e.g., <Route path="/dashboard" element={<Dashboard />} /> */}
+        </Routes>
+      </Router>
+    </>
   );
 };
 

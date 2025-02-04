@@ -12,6 +12,7 @@ import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
 import Delete from "../../assets/icons/ddq-delete.svg";
 import { postFileToProcess } from "../../services/api";
 import LinearProgress from '@mui/material/LinearProgress';
+import { showToast } from '../../utils/toast';
 
 const FileWindow: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -27,8 +28,10 @@ const FileWindow: React.FC = () => {
       console.log("chat response for file:", fileToProcess.name, res);
       setProcessedFiles(prev => [...prev, fileToProcess]);
       setUploadedFiles(prev => prev.filter(file => file !== fileToProcess));
+      showToast.success(`File "${fileToProcess.name}" processed successfully!`);
     } catch (error) {
       console.error("Error processing file:", fileToProcess.name, error);
+      showToast.error(`Error processing file "${fileToProcess.name}". Please try again.`);
     } finally {
       setProcessingFiles(prev => {
         const updated = new Set(prev);
