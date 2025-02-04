@@ -10,7 +10,7 @@
   display: flex;
 }
 .file-window {
-  padding: 1rem;
+  padding: rem(24);
   background-color: $secondary-ddq;
   height: 100%;
   width: 100%;
@@ -45,91 +45,118 @@
     align-items: center;
     width: 80%;
     background: $chatbot-input;
-    padding: 1.5rem;
+    padding: rem(28) rem(32);
     border-radius: rem(24);
     justify-content: space-between;
-    .upload-file-icon {
-      margin-right: rem(5);
-    }
     .upload-container-1 {
       display: flex;
       align-items: center;
+      gap: rem(16);
     }
     .upload-container-2 {
       display: flex;
       align-items: center;
+    }
+    .upload-file-icon {
+      width: rem(48);
+      height: rem(48);
+      margin-right: rem(16);
+    }
+    .upload-text-1 {
+      color: $white;
+      font-size: rem(22);
+      font-weight: $font-weight-medium-bold;
+      margin-bottom: rem(8);
+    }
+    .upload-text-2 {
+      color: rgba($color: $white, $alpha: 0.7);
+      font-size: $font-size-ss;
+      font-weight: $font-weight-normal;
+      line-height: 1.4;
     }
     .browse-file-btn {
       background: $primary;
       border: none;
       border-radius: rem(50);
       color: $white;
-      padding: rem(12) rem(28);
+      padding: rem(14) rem(32);
       margin-right: rem(6);
       font-size: $font-size-base;
       font-weight: $font-weight-medium;
       cursor: pointer;
     }
-    .upload-text-1 {
-      color: $white;
-      font-size: rem(20);
-      font-weight: $font-weight-medium-bold;
-    }
-    .upload-text-2 {
-      color: rgba($color: $white, $alpha: 0.7);
-      font-size: $font-size-ss;
-      font-weight: $font-weight-normal;
-    }
     .circle-icon {
-      height: rem(8);
+      height: rem(4);
+      margin: 0 rem(8);
     }
   }
   .file-uploaded-container{
     width: 80%;
     background: $chatbot-input;
-    padding: 1.5rem;
+    padding: rem(28) rem(32);
     border-radius: rem(24);
-    margin-top: rem(14);
+    margin-top: rem(24);
     .file-uploaded-heading{
       font-size: $font-size-lg;
       font-weight: $font-weight-medium-bold;
       color: rgba($color: $white, $alpha: 0.7);
+      margin-bottom: rem(20);
     }
     .files-uploaded-list {
       width: 100%;
       background: $chatbot-input;
       border-radius: rem(24);
       color: rgba($color: $white, $alpha: 0.7);
-      margin-top: rem(12);
-      .file-uploaded-text-1 {
-        font-size: $font-size-sm;
-        font-weight: $font-weight-normal;
-      }
       .single-file-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-      }
-      .file-details-container {
-        display: flex;
-        align-items: center;
-      }
-      .file-name {
-        color: $white;
-        font-size: $font-size-base;
-        font-weight: $font-weight-medium;
-      }
-      .process-btn {
-        background: none;
-        border: 1px solid $primary;
-        border-radius: rem(50);
-        color: $primary;
-        padding: rem(12) rem(28);
-        margin-right: rem(10);
-        font-size: $font-size-base;
-        font-weight: $font-weight-medium;
-        cursor: pointer;
+        padding: rem(16) 0;
+        border-bottom: 1px solid rgba($color: $white, $alpha: 0.1);
+        &:last-child {
+          border-bottom: none;
+        }
+        .file-details-container {
+          display: flex;
+          align-items: center;
+          gap: rem(12);
+          img {
+            width: rem(32);
+            height: rem(32);
+          }
+        }
+        .file-name {
+          color: $white;
+          font-size: $font-size-base;
+          font-weight: $font-weight-medium;
+          margin-bottom: rem(4);
+        }
+        .file-uploaded-text-1 {
+          font-size: $font-size-sm;
+          font-weight: $font-weight-normal;
+        }
+        .align-items-center {
+          display: flex;
+          align-items: center;
+          gap: rem(16);
+          .process-btn {
+            background: none;
+            border: 1px solid $primary;
+            border-radius: rem(50);
+            color: $primary;
+            padding: rem(12) rem(28);
+            font-size: $font-size-base;
+            font-weight: $font-weight-medium;
+            cursor: pointer;
+            min-width: rem(120);
+          }
+          img {
+            width: rem(24);
+            height: rem(24);
+            cursor: pointer;
+          }
+        }
       }
     }
   }

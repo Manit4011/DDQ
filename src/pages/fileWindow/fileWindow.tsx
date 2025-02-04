@@ -11,38 +11,40 @@ import CircleIcon from "@mui/icons-material/Circle";
 import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
 import Delete from "../../assets/icons/ddq-delete.svg";
 import { postFileToProcess } from "../../services/api";
-import Loader from "../../components/Loader";
 
 const FileWindow: React.FC = () => {
-  const [isFileUploaded, setIsFileUploaded] = useState<boolean>(false);
-  const [fileName, setFileName] = useState<string>("");
-  const [fileSize, setFileSize] = useState<string>("");
-  const [file, setFile] = useState<File | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [processingFiles, setProcessingFiles] = useState<Set<string>>(new Set());
+  const [processedFiles, setProcessedFiles] = useState<File[]>([]);
 
-  const handleProcessClick = async () => {
-    if (!file) {
-      console.error("No file selected!");
-      return;
-    }
+  const handleProcessClick = async (fileToProcess: File) => {
+    if (!fileToProcess) return;
+
     try {
-      setLoading(true);
-      const res = await postFileToProcess(file, "");
-      console.log("chat response: ", res);
+      setProcessingFiles(prev => new Set(prev).add(fileToProcess.name));
+      const res = await postFileToProcess(fileToProcess, "");
+      console.log("chat response for file:", fileToProcess.name, res);
+      setProcessedFiles(prev => [...prev, fileToProcess]);
+      setUploadedFiles(prev => prev.filter(file => file !== fileToProcess));
     } catch (error) {
-      console.error("Error fetching chat response:", error);
+      console.error("Error processing file:", fileToProcess.name, error);
     } finally {
-      setLoading(false);
+      setProcessingFiles(prev => {
+        const updated = new Set(prev);
+        updated.delete(fileToProcess.name);
+        return updated;
+      });
     }
   };
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("Accepted files:", acceptedFiles[0]);
-    setFile(acceptedFiles[0]);
-    setIsFileUploaded(true);
-    setFileName(acceptedFiles[0].name);
-    setFileSize((acceptedFiles[0].size / 1024).toFixed(2));
-    // Process the files
+    console.log("Accepted files:", acceptedFiles);
+    setUploadedFiles(prev => [...prev, ...acceptedFiles]);
   }, []);
+
+  const handleDeleteFile = (fileToDelete: File) => {
+    setUploadedFiles(prev => prev.filter(file => file !== fileToDelete));
+  };
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
@@ -75,11 +77,6 @@ const FileWindow: React.FC = () => {
 
   return (
     <div className="file-window">
-      {loading && (
-        <div className="backdrop">
-          <Loader type="circle" loadercolor="primary" />
-        </div>
-      )}
       <div className="file-input-upload mt-10" {...getRootProps()}>
         <input {...getInputProps()} className="upload-file-input" />
         {isDragActive ? (
@@ -120,33 +117,69 @@ const FileWindow: React.FC = () => {
           </>
         )}
       </div>
-      {isFileUploaded && (
+      {uploadedFiles.length > 0 && (
         <div className="file-uploaded-container">
           <div className="file-uploaded-heading">UPLOADED FILES</div>
           <div className="files-uploaded-list">
-            <div className="single-file-row">
-              <div className="file-details-container">
-                <img src={fileUploadIcon} alt="" height={20} />
-                <div className="ml-10">
-                  <div className="file-name">{fileName}</div>
-                  <div className="file-uploaded-text-1">{fileSize} Kb</div>
+            {uploadedFiles.map((uploadedFile, index) => (
+              <div className="single-file-row" key={`${uploadedFile.name}-${index}`}>
+                <div className="file-details-container">
+                  <img src={fileUploadIcon} alt="" height={20} />
+                  <div className="ml-10">
+                    <div className="file-name">{uploadedFile.name}</div>
+                    <div className="file-uploaded-text-1">
+                      {(uploadedFile.size / 1024).toFixed(2)} Kb
+                    </div>
+                  </div>
+                </div>
+                <div className="align-items-center">
+                  <button 
+                    className="process-btn"
+                    onClick={() => handleProcessClick(uploadedFile)}
+                    disabled={processingFiles.has(uploadedFile.name)}
+                  >
+                    {processingFiles.has(uploadedFile.name) 
+                      ? 'Processing...' 
+                      : BUTTON_LABELS.process}
+                  </button>
+                  <img
+                    src={Delete}
+                    alt=""
+                    className="cursor-pointer"
+                    onClick={() => handleDeleteFile(uploadedFile)}
+                  />
                 </div>
               </div>
-              <div className="align-items-center">
-                <button className="process-btn" onClick={handleProcessClick}>
-                  {BUTTON_LABELS.process}
-                </button>
-                <img
-                  src={Delete}
-                  alt=""
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setFile(undefined);
-                    setIsFileUploaded(false);
-                  }}
-                />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {processedFiles.length > 0 && (
+        <div className="file-uploaded-container">
+          <div className="file-uploaded-heading">PROCESSED FILES</div>
+          <div className="files-uploaded-list">
+            {processedFiles.map((processedFile, index) => (
+              <div className="single-file-row" key={`${processedFile.name}-${index}`}>
+                <div className="file-details-container">
+                  <img src={fileUploadIcon} alt="" height={20} />
+                  <div className="ml-10">
+                    <div className="file-name">{processedFile.name}</div>
+                    <div className="file-uploaded-text-1">
+                      {(processedFile.size / 1024).toFixed(2)} Kb
+                    </div>
+                  </div>
+                </div>
+                <div className="align-items-center">
+                  <img
+                    src={Delete}
+                    alt=""
+                    className="cursor-pointer"
+                    onClick={() => setProcessedFiles(prev => prev.filter(file => file !== processedFile))}
+                  />
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
