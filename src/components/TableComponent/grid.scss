@@ -1,7 +1,7 @@
 @import "../../assets/variable.scss";
 
 .grid-container{
-  padding: 1rem 3rem;
+  padding: 1rem 3rem 4rem 3rem;
   background: $secondary-ddq;
   display: flex;
   flex-direction: column;
@@ -44,5 +44,27 @@
     background: $secondary-ddq;
     border-radius: $border-radius-base; // Add rounded corners
     margin-top: 1rem;
+    & .MuiDataGrid-container--top [role=row]{
+      background: #ffffff1a !important;
+      color: #ffffffe6;
+    }
+    & .MuiDataGrid-iconButtonContainer button{
+      color: #ffffffe6 !important;
+    }
+    & .MuiDataGrid-menuIcon button{
+      color: #ffffffe6 !important;
+
+    }
+  }
+  .chatbot-input {
+    position: fixed;
+    bottom: 5px;
+    width: 65%;
+    display: flex;
+    align-items: center;
+    background: $chatbot-input;
+    border-radius: rem(24);
+    padding: 0.5rem;
+    transition: all 0.3s ease-in-out;
   }
 }

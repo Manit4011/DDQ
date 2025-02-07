@@ -25,7 +25,7 @@ const App: React.FC = () => {
     } else {
       setIsChatBotVisible(false);
     }
-  }, [chat.page]);
+  }, [chat.page, chat.size]);
 
   const handleMainWindow = (tab: "chatbot" | "file-upload") => {
     if (tab === "chatbot") {
@@ -83,25 +83,87 @@ const App: React.FC = () => {
                 isSideNavCollapsed ? "expanded" : ""
               }`}
             >
-              {globalMessages.gridData ? (
-                <PanelGroup direction="vertical">
-                  <Panel
-                    style={{ overflowY: "auto" }}
-                    defaultSize={50}
-                    minSize={20}
-                    maxSize={100}
-                    className="hidden-scroll"
-                  >
-                    <Grid />
-                  </Panel>
-                  <PanelResizeHandle className="panelResize" />
-                  <Panel className="hidden-scroll" minSize={20} maxSize={100}>
-                    <ChatBot />
-                  </Panel>
-                </PanelGroup>
+              {chat.size === "expanded" ? (
+                <>
+                {globalMessages?.gridData && (
+                  <PanelGroup direction="vertical">
+                    <Panel
+                      style={{ overflowY: "auto", scrollbarWidth: "none" }}
+                    >
+                      <Grid />
+                    </Panel>
+                  </PanelGroup>
+                )}
+                {globalMessages?.gridData == null && (
+                  <ChatBot />
+                )}
+                </>
+              ) : chat.size === "split" ? (
+                <>
+                  <PanelGroup direction="vertical">
+                    <Panel
+                      style={{ overflowY: "auto" }}
+                      defaultSize={50}
+                      minSize={20}
+                      maxSize={100}
+                      className="hidden-scroll"
+                    >
+                      <Grid />
+                    </Panel>
+                    <PanelResizeHandle className="panelResize" />
+                    <Panel className="hidden-scroll" minSize={20} maxSize={100}>
+                      <ChatBot />
+                    </Panel>
+                  </PanelGroup>
+                </>
               ) : (
                 <ChatBot />
               )}
+              {/* {chat.size === "expanded" && (
+                <>
+                  {globalMessages.gridData && (
+                      <PanelGroup direction="vertical">
+                        <Panel
+                          style={{ overflowY: "auto", scrollbarWidth: "none" }}
+                        >
+                          <Grid />
+                        </Panel>
+                      </PanelGroup>
+                    )}
+                </>
+              )}
+              {(chat.size === "split") && (
+                <>
+                  {globalMessages.gridData ? (
+                    <PanelGroup direction="vertical">
+                      <Panel
+                        style={{ overflowY: "auto" }}
+                        defaultSize={50}
+                        minSize={20}
+                        maxSize={100}
+                        className="hidden-scroll"
+                      >
+                        <Grid />
+                      </Panel>
+                      <PanelResizeHandle className="panelResize" />
+                      <Panel
+                        className="hidden-scroll"
+                        minSize={20}
+                        maxSize={100}
+                      >
+                        <ChatBot />
+                      </Panel>
+                    </PanelGroup>
+                  ) : (
+                    <ChatBot />
+                  )}
+                </>
+              )}
+              {chat.size === 'collapsed' && (
+                <>
+                <ChatBot />
+                </>
+              )} */}
             </div>
           )}
           {!isChatBotVisible && (
@@ -121,75 +183,9 @@ const App: React.FC = () => {
             <ChatBot />
           </div>
         )} */}
-        {/* Logout Button */}
-        {/* <div className="logout-container">
-          <button onClick={handleLogout} className="logout-btn">
-            Logout
-          </button>
-        </div> */}
       </div>
     </div>
   );
 };
 
 export default App;
-
-// import React, { useState } from "react";
-// import "./dashboard.scss";
-// import SideNavBar from "../sideNavBar/sideNavBar";
-// import ChatBot from "../chatbot/chatbot";
-// import { useNavigate } from "react-router-dom";
-// import { logout } from "../../services/authenticate";
-
-// const Header: React.FC = () => (
-//   <div className="header">
-//     <h1>Dashboard Header</h1>
-//   </div>
-// );
-
-// const App: React.FC = () => {
-//   const navigate = useNavigate();
-//   const [isSideNavCollapsed, setIsSideNavCollapsed] = useState(false); // Sidebar collapse state
-
-//   // Handle logout
-//   const handleLogout = () => {
-//     logout();
-//     navigate("/login");
-//   };
-
-//   // Toggle sidebar collapse
-//   const handleToggleSideNav = () => {
-//     setIsSideNavCollapsed(!isSideNavCollapsed);
-//   };
-
-//   return (
-//     <div className="app-container">
-//       <div className="layout">
-//         {/* Sidebar */}
-//         <div
-//           className={`side-nav-bar-container ${
-//             isSideNavCollapsed ? "collapsed" : ""
-//           }`}
-//         >
-//           <SideNavBar
-//             isCollapsed={isSideNavCollapsed}
-//             onToggleSideNav={handleToggleSideNav}
-//           />
-//         </div>
-
-//         {/* Main content area */}
-//         <div className="main-content">
-//           {/* Header */}
-//           <Header />
-
-//           {/* ChatBot */}
-//           <div className="chatbot-container">
-//             <ChatBot />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default App;
