@@ -11,6 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import CommonModal from "../commonModal/commonModal";
 import { DELETE_MESSAGE } from "../../constants/constant";
 import { resetLastModified } from "../../features/lastModifiedSlice";
+import { setPageSize } from "../../features/chatSlice";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Header: React.FC = () => {
   const handleClearChat = () =>{
     dispatch(deleteChat());
     dispatch((resetLastModified()));
+    dispatch(setPageSize('expanded'));
   }
   return (
     <div className="header-container">
