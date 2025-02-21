@@ -33,7 +33,7 @@ import Tooltip from "@mui/material/Tooltip";
 import ExpandIcon from "../../assets/icons/expand-icon.svg";
 import SplitScreen from "../../assets/icons/split-icon.svg";
 import { setPageSize } from "../../features/chatSlice";
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 const ChatBot: React.FC = () => {
   const user = useSelector(selectUser);
@@ -47,6 +47,7 @@ const ChatBot: React.FC = () => {
   const [fileSize, setFileSize] = useState<string>("");
   const [isFileUploaded, setIsFileUploaded] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const [file, setFile] = useState<File | undefined>(undefined);
   const chat = useSelector(selectpage);
@@ -54,7 +55,10 @@ const ChatBot: React.FC = () => {
   useEffect(() => {
     if (chat.page === "chat") {
       const scrollToBottom = () => {
-        if (globalMessages.messages.length > 0 && messagesContainerRef.current) {
+        if (
+          globalMessages.messages.length > 0 &&
+          messagesContainerRef.current
+        ) {
           messagesContainerRef.current.scrollTop =
             messagesContainerRef.current.scrollHeight;
         }
@@ -62,7 +66,7 @@ const ChatBot: React.FC = () => {
       scrollToBottom();
       if (globalMessages.messages.length) {
         setIsChatStarted(true);
-      }else{
+      } else {
         setIsChatStarted(false);
       }
     }
@@ -140,30 +144,32 @@ const ChatBot: React.FC = () => {
     }
     try {
       dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
-      setLoading(true);
-      const res = await uploadQuestionnaireFile(file, user.user_id, "").then((res) => {
-        let parsedData = [];
-        try {
-          if (typeof res.data === "string") {
-            parsedData = JSON.parse(res.data);
-          } else if (Array.isArray(res.data)) {
-            parsedData = res.data;
-          } else {
-            console.error("Unexpected data format in response");
+      setIsProcessing(true);
+      const res = await uploadQuestionnaireFile(file, user.user_id, "").then(
+        (res) => {
+          let parsedData = [];
+          try {
+            if (typeof res.data === "string") {
+              parsedData = JSON.parse(res.data);
+            } else if (Array.isArray(res.data)) {
+              parsedData = res.data;
+            } else {
+              console.error("Unexpected data format in response");
+            }
+          } catch (parseError) {
+            console.error("Error parsing response data:", parseError);
           }
-        } catch (parseError) {
-          console.error("Error parsing response data:", parseError);
-        }
-        dispatch(setGridData(parsedData));
+          dispatch(setGridData(parsedData));
         if(chat.size === 'expanded'){
           dispatch(setPageSize('split'));
         }
-      });
+        }
+      );
       console.log(res);
     } catch (error) {
       console.error("Error fetching chat response:", error);
     } finally {
-      setLoading(false);
+      setIsProcessing(false);
     }
   };
 
@@ -290,7 +296,7 @@ const ChatBot: React.FC = () => {
                 </div>
               ) : (
                 <div className="mesage-img">
-                  <img src={ChatbotAnswer}  alt="chhatbotanswer"/>
+                  <img src={ChatbotAnswer} alt="chhatbotanswer" />
                 </div>
               )}
               <div className="chat-text">
@@ -317,7 +323,11 @@ const ChatBot: React.FC = () => {
                 >
                   <div className="option-internal-container mb-10 ml-10">
                     <div className="option-img-container mb-10">
-                      <img src={ChatbotAnswer} className="mr-10"  alt="chatbotanswer"/>
+                      <img
+                        src={ChatbotAnswer}
+                        className="mr-10"
+                        alt="chatbotanswer"
+                      />
                       Answer:
                     </div>
                     <div
@@ -353,9 +363,25 @@ const ChatBot: React.FC = () => {
                   </div>
                 </div>
                 <div className="align-items-center">
-                  <button className="process-btn" onClick={handleProcessClick}>
-                    {BUTTON_LABELS.process}
-                  </button>
+                  {isProcessing ? (
+                    <div style={{ width: "100px", marginRight: "10px" }}>
+                      <LinearProgress
+                        sx={{
+                          "& .MuiLinearProgress-bar": {
+                            backgroundColor: "#38a3a5",
+                          },
+                          backgroundColor: "#38a3a580",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      className="process-btn"
+                      onClick={handleProcessClick}
+                    >
+                      {BUTTON_LABELS.process}
+                    </button>
+                  )}
                   <img
                     src={Delete}
                     alt="delete"
@@ -420,12 +446,12 @@ const ChatBot: React.FC = () => {
                 {!globalMessages.gridData && (
                   <Tooltip title="Upload File">
                     <img
-                    className="file-upload-icon"
-                    src={fileUploadIcon}
-                    alt={ICON_ALTS.fileUpload}
-                    onClick={handleUploadIconClick}
-                    height={20}
-                  />
+                      className="file-upload-icon"
+                      src={fileUploadIcon}
+                      alt={ICON_ALTS.fileUpload}
+                      onClick={handleUploadIconClick}
+                      height={20}
+                    />
                   </Tooltip>
                 )}
                 <textarea
