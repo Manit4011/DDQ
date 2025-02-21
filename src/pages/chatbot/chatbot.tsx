@@ -31,6 +31,8 @@ import { v4 as uuidv4 } from "uuid";
 import SelectAnswer from "../../assets/icons/select-answer.svg";
 import Tooltip from "@mui/material/Tooltip";
 import ExpandIcon from "../../assets/icons/expand-icon.svg";
+import SplitScreen from "../../assets/icons/split-icon.svg";
+import { setPageSize } from "../../features/chatSlice";
 import LinearProgress from '@mui/material/LinearProgress';
 
 const ChatBot: React.FC = () => {
@@ -158,6 +160,9 @@ const ChatBot: React.FC = () => {
             console.error("Error parsing response data:", parseError);
           }
           dispatch(setGridData(parsedData));
+        if(chat.size === 'expanded'){
+          dispatch(setPageSize('split'));
+        }
         }
       );
       console.log(res);
@@ -190,6 +195,9 @@ const ChatBot: React.FC = () => {
     if (input.trim() !== "") {
       dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
       if (!isChatStarted) setIsChatStarted(true);
+      if(chat.size === 'expanded' && globalMessages.gridData){
+        dispatch(setPageSize('split'));
+      }
       const userMessage: Message = { text: input, sender: "user" };
       const updatedMessages = [...globalMessages.messages, userMessage];
       dispatch(addGlobalMessages(updatedMessages));
@@ -230,6 +238,13 @@ const ChatBot: React.FC = () => {
     dispatch(addGlobalMessages(newMessages));
     setBotOptions(null);
   };
+  const handleSplitClick = () =>{
+      if(chat.size === 'split'){
+        dispatch(setPageSize('collapsed'));
+      }else{
+        dispatch(setPageSize('split'));
+      }
+    }
 
   return (
     <>
@@ -242,12 +257,23 @@ const ChatBot: React.FC = () => {
           </div>
         )}
         {globalMessages.gridData && (
-          <div className="align-items-right cursor-pointer">
+          <>
+          {chat.size === 'split' ? (
+          <div className="align-items-right cursor-pointer" onClick={handleSplitClick}>
             <Tooltip title="Expand" placement="bottom">
               <img src={ExpandIcon} alt="expand" />
             </Tooltip>
             <div className="expand-text">Expand Screen</div>
           </div>
+          ) : (
+            <div className="align-items-right cursor-pointer" onClick={handleSplitClick}>
+            <Tooltip title="Expand" placement="bottom">
+              <img src={SplitScreen} alt="expand" />
+            </Tooltip>
+            <div className="expand-text">Split Screen</div>
+          </div>
+          )}
+          </>          
         )}
         {!isChatStarted && (
           <>
