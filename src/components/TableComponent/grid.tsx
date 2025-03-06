@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./grid.scss";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import UserLogo from "../../assets/icons/user-logo.svg";
