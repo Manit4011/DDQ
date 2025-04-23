@@ -52,7 +52,7 @@ export const postFileToProcess = async (file: File, filePath: string): Promise<a
     formData.append("file", file);
     formData.append("file_path", filePath);
 
-    const response = await apiClient.post("process_file", formData, {
+    const response = await apiClient.post("upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data", // Indicate a form-data request
       },
@@ -76,7 +76,7 @@ export const uploadQuestionnaireFile = async (
     formData.append("user_id", userId);
     formData.append("conv_id", convId);
 
-    const response = await apiClient.post("questionnaire", formData, {
+    const response = await apiClient.post("process-questionnaire", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
