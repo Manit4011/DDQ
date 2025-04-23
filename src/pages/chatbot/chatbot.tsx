@@ -210,6 +210,8 @@ const ChatBot: React.FC = () => {
       setLoading(true);
       postChat(data)
         .then((res) => {
+          console.log('res---',res);
+          
           const botAnswer = res.response[0]?.answer;
           let botMessage: Message;
           if (res.response.length === 1) {
