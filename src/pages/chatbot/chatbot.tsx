@@ -74,14 +74,14 @@ const ChatBot: React.FC = () => {
     // @ts-ignore: Ignoring TypeScript error for the dependency array
   }, [globalMessages.messages, chat.page, messagesContainerRef]);
 
-  const generateBotOptions = (answers: ChatResponse[]) => {
-    const botResponses = answers.map((answer) => ({
-      id: uuidv4(),
-      text: answer.answer,
-    }));
+  // const generateBotOptions = (answers: ChatResponse[]) => {
+  //   const botResponses = answers.map((answer) => ({
+  //     id: uuidv4(),
+  //     text: answer.answer,
+  //   }));
 
-    setBotOptions(botResponses);
-  };
+  //   setBotOptions(botResponses);
+  // };
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
     setIsFileUploaded(true);
