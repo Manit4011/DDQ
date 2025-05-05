@@ -25,7 +25,6 @@ export const authenticate=(Email: string,Password: string): Promise<CognitoUserS
 
         user.authenticateUser(authDetails,{
             onSuccess:(result)=>{
-                console.log("login successful",result);
                 resolve(result);
             },
             onFailure:(err)=>{

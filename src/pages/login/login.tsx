@@ -74,7 +74,6 @@ const Login: React.FC = () => {
               .then(
                 (data) => {
                   setLoginErr("");
-                  console.log("data---", data);
                   dispatch(
                     setToken({
                       access: data.getAccessToken().getJwtToken(),
