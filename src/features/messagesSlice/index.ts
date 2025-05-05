@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Message, MessageState } from "./type";
 import { revertAll } from "../globalActions";
-import { QuestionData } from "../../types/interface";
+import { ChatbotResponseData } from "../../types/interface";
 
 
 export const initialState: MessageState = {
@@ -16,7 +16,7 @@ const messageSlice = createSlice({
         addGlobalMessages(state, action: PayloadAction<Message[]>) {
             state.messages = action.payload;
         },
-        setGridData(state, action: PayloadAction<QuestionData[]>){
+        setGridData(state, action: PayloadAction<ChatbotResponseData>){
             state.gridData = action.payload;
         },
         deleteChat(state){

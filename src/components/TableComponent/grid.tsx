@@ -13,6 +13,7 @@ import chatSubmit from "../../assets/icons/chat-submit-icon.svg";
 import SplitScreen from "../../assets/icons/split-icon.svg";
 import { selectpage } from "../../features/chatSlice/selector";
 import { setPageSize } from "../../features/chatSlice";
+import { ChatbotResponseData } from "../../types/interface";
 
 const Grid: React.FC = () => {
   const globalMessages = useSelector(selectMessages);
@@ -20,32 +21,28 @@ const Grid: React.FC = () => {
   const gridSize = useSelector(selectpage);
   const dispatch = useDispatch();
   const formattedData = useMemo(() => {
-    return globalMessages.gridData.map((item: any, index: number) => {
-      const answers = [item.Answer_1, item.Answer_2]
-        .filter((answer) => answer)
-        .map((answer) => `• ${answer}`)
-        .join("\n");
+    const rawData = globalMessages?.gridData as ChatbotResponseData | undefined;
 
-      const referenceStatements = [
-        item.Reference_statement_1,
-        item.Reference_statement_2,
-      ]
-        .filter((statement) => statement)
-        .map((statement) => `• ${statement}`)
-        .join("\n");
+    if (!rawData) return [];
 
-      const references = [item.References_1, item.References_2]
-        .filter((reference) => reference)
-        .map((reference) => `• ${reference}`)
-        .join("\n"); // Join with a newline for display
+    const rowCount = Object.keys(rawData.Question || {}).length;
+
+    return Array.from({ length: rowCount }, (_, index) => {
+      const key = index.toString();
+      const question = rawData.Question?.[key] || "N/A";
+      const answer = rawData.Answer_1?.[key] || "N/A";
+      const confidence = rawData.Confidence_1?.[key] || "N/A";
+      const referenceStatement = rawData.Reference_statement_1?.[key] || "N/A";
+      const references = rawData.References_1?.[key] || "N/A";
 
       return {
         id: index,
         sno: index + 1,
-        question: item.question || item.Question,
-        answerText: answers || "N/A",
-        referenceStatement: referenceStatements || "N/A",
-        references: references || "N/A",
+        question,
+        answerText: `• ${answer}`,
+        confidence,
+        referenceStatement: `• ${referenceStatement}`,
+        references: `• ${references}`,
       };
     });
   }, [globalMessages.gridData]);
@@ -60,6 +57,11 @@ const Grid: React.FC = () => {
       renderCell: (params) => (
         <div style={{ whiteSpace: "pre-line" }}>{params.value}</div>
       ),
+    },
+    {
+      field: "confidence",
+      headerName: "Confidence",
+      flex: 1,
     },
     {
       field: "referenceStatement",

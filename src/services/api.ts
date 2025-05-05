@@ -4,7 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { API_BASE_URL } from "../constants/constant";
-import { ChatApiResponse, QuestionnaireResponse } from "../types/interface";
+import { ChatApiResponse, ChatbotApiResponse, FileUploadResponse, UploadPollingResponse, UploadResponse } from "../types/interface";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -46,7 +46,7 @@ export const postChat = async (data: any): Promise<ChatApiResponse> => {
     throw error;
   }
 };
-export const postFileToProcess = async (file: File, filePath: string): Promise<any> => {
+export const postFileToProcess = async (file: File, filePath: string): Promise<UploadResponse> => {
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -64,12 +64,23 @@ export const postFileToProcess = async (file: File, filePath: string): Promise<a
     throw error;
   }
 };
+export const getUploadFileResponse = async (
+  taskId: string
+): Promise<UploadPollingResponse> => {
+  try {
+    const response = await apiClient.get(`/get_info/${taskId}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching response: ", error.message);
+    throw error;
+  }
+}
 
 export const uploadQuestionnaireFile = async (
   file: File,
   userId: string,
   convId: string
-): Promise<QuestionnaireResponse> => {
+): Promise<FileUploadResponse> => {
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -84,6 +95,17 @@ export const uploadQuestionnaireFile = async (
     return response.data;
   } catch (error: any) {
     console.error("Error uploading file: ", error.message);
+    throw error;
+  }
+};
+export const getFileProcessingResponse = async (
+  fileId: string
+): Promise<ChatbotApiResponse> => {
+  try {
+    const response = await apiClient.get(`/get_response/${fileId}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching response: ", error.message);
     throw error;
   }
 };

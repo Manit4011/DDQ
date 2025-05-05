@@ -10,27 +10,51 @@ import { useDropzone } from "react-dropzone";
 import CircleIcon from "@mui/icons-material/Circle";
 import fileUploadIcon from "../../assets/icons/sidenav-file-icon.svg";
 import Delete from "../../assets/icons/ddq-delete.svg";
-import { postFileToProcess } from "../../services/api";
+import { getUploadFileResponse, postFileToProcess } from "../../services/api";
 import LinearProgress from '@mui/material/LinearProgress';
 import { showToast } from '../../utils/toast';
+import { UploadPollingResponse } from "../../types/interface";
 
 const FileWindow: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [processingFiles, setProcessingFiles] = useState<Set<string>>(new Set());
   const [processedFiles, setProcessedFiles] = useState<File[]>([]);
+  const POLL_INTERVAL = 3000;
+  const MAX_ATTEMPTS = 30;
 
   const handleProcessClick = async (fileToProcess: File) => {
     if (!fileToProcess) return;
 
     try {
       setProcessingFiles(prev => new Set(prev).add(fileToProcess.name));
-      const res = await postFileToProcess(fileToProcess, "");
-      console.log("chat response for file:", fileToProcess.name, res);
+      const uploadRes = await postFileToProcess(fileToProcess, "");
+      if (uploadRes.status !== "success" || !uploadRes.task_id) {
+        throw new Error("File upload failed or no task_id received.");
+      }
+      const taskId = uploadRes.task_id;
+      let attempts = 0;
+      let result: UploadPollingResponse;
+
+      while (attempts < MAX_ATTEMPTS) {
+        result = await getUploadFileResponse(taskId);
+        if (result.data[0].status === "completed") {
+          showToast.success(`File "${fileToProcess.name}" processed successfully!`);
+          break;
+        }
+        if (result.data[0].status === "failed") {
+          throw new Error("Processing failed.");
+        }
+        await new Promise(res => setTimeout(res, POLL_INTERVAL));
+        attempts++;
+      }
+
+      if (attempts === MAX_ATTEMPTS) {
+        showToast.warning("Timed out waiting for file processing.");
+        throw new Error("Timed out waiting for file processing.");
+      }
       setProcessedFiles(prev => [...prev, fileToProcess]);
-      setUploadedFiles(prev => prev.filter(file => file !== fileToProcess));
-      showToast.success(`File "${fileToProcess.name}" processed successfully!`);
+      setUploadedFiles(prev => prev.filter(file => file !== fileToProcess)); 
     } catch (error) {
-      console.error("Error processing file:", fileToProcess.name, error);
       showToast.error(`Error processing file "${fileToProcess.name}". Please try again.`);
     } finally {
       setProcessingFiles(prev => {
@@ -42,7 +66,6 @@ const FileWindow: React.FC = () => {
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("Accepted files:", acceptedFiles);
     setUploadedFiles(prev => [...prev, ...acceptedFiles]);
   }, []);
 
