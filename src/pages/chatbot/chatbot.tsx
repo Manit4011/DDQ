@@ -17,7 +17,7 @@ import UploadFile from "../../assets/icons/upload-file.svg";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useDropzone } from "react-dropzone";
 import Delete from "../../assets/icons/ddq-delete.svg";
-import { postChat, uploadQuestionnaireFile } from "../../services/api";
+import { getFileProcessingResponse, postChat, uploadQuestionnaireFile } from "../../services/api";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../features/userInfo/selector";
 import Loader from "../../components/Loader";
@@ -33,7 +33,8 @@ import Tooltip from "@mui/material/Tooltip";
 import ExpandIcon from "../../assets/icons/expand-icon.svg";
 import SplitScreen from "../../assets/icons/split-icon.svg";
 import { setPageSize } from "../../features/chatSlice";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
+import { showToast } from "../../utils/toast";
 
 const ChatBot: React.FC = () => {
   const user = useSelector(selectUser);
@@ -82,7 +83,6 @@ const ChatBot: React.FC = () => {
     setBotOptions(botResponses);
   };
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("Accepted files:", acceptedFiles[0]);
     setFile(acceptedFiles[0]);
     setIsFileUploaded(true);
     setFileName(acceptedFiles[0].name);
@@ -145,29 +145,34 @@ const ChatBot: React.FC = () => {
     try {
       dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
       setIsProcessing(true);
-      const res = await uploadQuestionnaireFile(file, user.user_id, "").then(
-        (res) => {
-          let parsedData = [];
-          try {
-            if (typeof res.data === "string") {
-              parsedData = JSON.parse(res.data);
-            } else if (Array.isArray(res.data)) {
-              parsedData = res.data;
-            } else {
-              console.error("Unexpected data format in response");
-            }
-          } catch (parseError) {
-            console.error("Error parsing response data:", parseError);
-          }
-          dispatch(setGridData(parsedData));
-        if(chat.size === 'expanded'){
-          dispatch(setPageSize('split'));
+      const uploadResponse = await uploadQuestionnaireFile(file, user.user_id, "");
+      const fileId = uploadResponse.file_id;
+
+      // Start polling
+      const pollInterval = 3000;
+      const maxAttempts = 25;
+      let attempts = 0;
+      let processingDone = false;
+  
+      while (attempts<= maxAttempts && !processingDone) {
+        const response = await getFileProcessingResponse(fileId);
+
+        if (response?.data?.Status === "Success") {
+          dispatch(setGridData(response.data || []));
+          processingDone = true;
+          break;
         }
-        }
-      );
-      console.log(res);
+        await new Promise((resolve) => setTimeout(resolve, pollInterval));
+        attempts++;
+      }
+      if (!processingDone) {
+        showToast.warning("Polling ended but processing not complete.");
+      }
+      if (chat.size === "expanded") {
+        dispatch(setPageSize("split"));
+      }
     } catch (error) {
-      console.error("Error fetching chat response:", error);
+      console.error("Error during processing:", error);
     } finally {
       setIsProcessing(false);
     }
@@ -195,8 +200,8 @@ const ChatBot: React.FC = () => {
     if (input.trim() !== "") {
       dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
       if (!isChatStarted) setIsChatStarted(true);
-      if(chat.size === 'expanded' && globalMessages.gridData){
-        dispatch(setPageSize('split'));
+      if (chat.size === "expanded" && globalMessages.gridData) {
+        dispatch(setPageSize("split"));
       }
       const userMessage: Message = { text: input, sender: "user" };
       const updatedMessages = [...globalMessages.messages, userMessage];
@@ -210,21 +215,22 @@ const ChatBot: React.FC = () => {
       setLoading(true);
       postChat(data)
         .then((res) => {
-          console.log('res---',res);
-          
-          const botAnswer = res.response[0]?.answer;
+          const botAnswer = res.options?.answer;
+          const confidence = res.options?.confidence;
+  
           let botMessage: Message;
-          if (res.response.length === 1) {
-            if (botAnswer) {
-              botMessage = { text: botAnswer, sender: "bot" };
-            } else {
-              botMessage = { text: NO_INFO, sender: "bot" };
-            }
-            const finalMessages = [...updatedMessages, botMessage];
-            dispatch(addGlobalMessages(finalMessages));
+          if (botAnswer) {
+            const confidenceText = confidence !== undefined ? `\n\nConfidence: ${confidence}` : "";
+            botMessage = {
+              text: `${botAnswer}${confidenceText}`,
+              sender: "bot",
+            };
           } else {
-            generateBotOptions(res.response);
+            botMessage = { text: NO_INFO, sender: "bot" };
           }
+  
+          const finalMessages = [...updatedMessages, botMessage];
+          dispatch(addGlobalMessages(finalMessages));
           setLoading(false);
         })
         .catch((error) => {
@@ -240,13 +246,13 @@ const ChatBot: React.FC = () => {
     dispatch(addGlobalMessages(newMessages));
     setBotOptions(null);
   };
-  const handleSplitClick = () =>{
-      if(chat.size === 'split'){
-        dispatch(setPageSize('collapsed'));
-      }else{
-        dispatch(setPageSize('split'));
-      }
+  const handleSplitClick = () => {
+    if (chat.size === "split") {
+      dispatch(setPageSize("collapsed"));
+    } else {
+      dispatch(setPageSize("split"));
     }
+  };
 
   return (
     <>
@@ -260,22 +266,28 @@ const ChatBot: React.FC = () => {
         )}
         {globalMessages.gridData && (
           <>
-          {chat.size === 'split' ? (
-          <div className="align-items-right cursor-pointer" onClick={handleSplitClick}>
-            <Tooltip title="Expand" placement="bottom">
-              <img src={ExpandIcon} alt="expand" />
-            </Tooltip>
-            <div className="expand-text">Expand Screen</div>
-          </div>
-          ) : (
-            <div className="align-items-right cursor-pointer" onClick={handleSplitClick}>
-            <Tooltip title="Expand" placement="bottom">
-              <img src={SplitScreen} alt="expand" />
-            </Tooltip>
-            <div className="expand-text">Split Screen</div>
-          </div>
-          )}
-          </>          
+            {chat.size === "split" ? (
+              <div
+                className="align-items-right cursor-pointer"
+                onClick={handleSplitClick}
+              >
+                <Tooltip title="Expand" placement="bottom">
+                  <img src={ExpandIcon} alt="expand" />
+                </Tooltip>
+                <div className="expand-text">Expand Screen</div>
+              </div>
+            ) : (
+              <div
+                className="align-items-right cursor-pointer"
+                onClick={handleSplitClick}
+              >
+                <Tooltip title="Expand" placement="bottom">
+                  <img src={SplitScreen} alt="expand" />
+                </Tooltip>
+                <div className="expand-text">Split Screen</div>
+              </div>
+            )}
+          </>
         )}
         {!isChatStarted && (
           <>
@@ -384,6 +396,7 @@ const ChatBot: React.FC = () => {
                       {BUTTON_LABELS.process}
                     </button>
                   )}
+                  {!isProcessing &&
                   <img
                     src={Delete}
                     alt="delete"
@@ -392,7 +405,7 @@ const ChatBot: React.FC = () => {
                       setFile(undefined);
                       setIsFileUploaded(false);
                     }}
-                  />
+                  />}
                 </div>
               </div>
             </div>

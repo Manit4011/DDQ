@@ -37,7 +37,6 @@ const App: React.FC = () => {
   useEffect(() => {
     getSession()
       .then((session) => {
-        console.log("session--", session);
         dispatch(
           setUser({
             username: session.attributes.name,

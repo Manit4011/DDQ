@@ -1,14 +1,15 @@
 export interface ChatApiResponse {
-    conv_id: string;
-    response: ChatResponse[];
-    success: boolean;
-  }
-  
-  export interface ChatResponse {
-    answer: string;
-    metadata: Metadata[];
-    references: Reference[];
-  }
+  conv_id: string;
+  options: ChatResponse;
+  status: string;
+}
+
+export interface ChatResponse {
+  answer: string;
+  metadata: Metadata[];
+  references: Reference[];
+  confidence: number;
+}
   
   export interface Metadata {
     client_name: string;
@@ -31,6 +32,12 @@ export interface ChatApiResponse {
     text: string;
   }
 
+  export interface FileUploadResponse {
+    file_id: string;
+    message: string;
+    s3_filename: string;
+    status: string;
+  }
   export interface QuestionnaireResponse {
     conv_id: string;
     data: QuestionData[];
@@ -56,4 +63,32 @@ export interface ChatApiResponse {
     sheetName: string | null;
     pageNo: string | null;
     date: string | null;
+  }
+  export interface ChatbotApiResponse {
+    data?: ChatbotResponseData;
+    status?: string;
+  }
+  
+  export interface ChatbotResponseData {
+    Answer_1: Record<string, string>;
+    Confidence_1: Record<string,string>;
+    Question: Record<string, string>;
+    Reference_statement_1: Record<string, string>;
+    References_1: Record<string, string>;
+    Status: string;
+  }
+
+  export interface UploadResponse {
+    filename: string;
+    message: string;
+    status: "success" | "error";
+    task_id: string;
+  }
+  export interface UploadPollingItem {
+    task_id: string;
+    status: "processing" | "completed" | "failed";
+    ObjectId?: string[];
+  }
+  export interface UploadPollingResponse {
+    data: UploadPollingItem[];
   }
