@@ -32,7 +32,7 @@ const Grid: React.FC = () => {
       const question = rawData.Question?.[key] || "N/A";
       const answer = rawData.Answer_1?.[key] || "N/A";
       const confidence = rawData.Confidence_1?.[key] || "N/A";
-      const referenceStatement = rawData.Reference_statement_1?.[key] || "N/A";
+      // const referenceStatement = rawData.Reference_statement_1?.[key] || "N/A";
       const references = rawData.References_1?.[key] || "N/A";
 
       return {
@@ -41,7 +41,7 @@ const Grid: React.FC = () => {
         question,
         answerText: `• ${answer}`,
         confidence,
-        referenceStatement: `• ${referenceStatement}`,
+        // referenceStatement: `• ${referenceStatement}`,
         references: `• ${references}`,
       };
     });
@@ -63,14 +63,14 @@ const Grid: React.FC = () => {
       headerName: "Confidence",
       flex: 1,
     },
-    {
-      field: "referenceStatement",
-      headerName: "Reference Statement",
-      flex: 1.5,
-      renderCell: (params) => (
-        <div style={{ whiteSpace: "pre-line" }}>{params.value}</div>
-      ),
-    },
+    // {
+    //   field: "referenceStatement",
+    //   headerName: "Reference Statement",
+    //   flex: 1.5,
+    //   renderCell: (params) => (
+    //     <div style={{ whiteSpace: "pre-line" }}>{params.value}</div>
+    //   ),
+    // },
     {
       field: "references",
       headerName: "References",

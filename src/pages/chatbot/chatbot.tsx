@@ -138,7 +138,7 @@ const ChatBot: React.FC = () => {
 
   const handleProcessClick = async () => {
     if (!file) {
-      console.error("No file selected!");
+      console.error("Please select a file to upload.");
       return;
     }
     try {
@@ -148,12 +148,12 @@ const ChatBot: React.FC = () => {
       const fileId = uploadResponse.file_id;
 
       // Start polling
-      const pollInterval = 3000;
-      const maxAttempts = 25;
+      const pollInterval = 4000;
+      const maxAttempts = 45;
       let attempts = 0;
       let processingDone = false;
-  
-      while (attempts<= maxAttempts && !processingDone) {
+
+      while (attempts <= maxAttempts && !processingDone) {
         const response = await getFileProcessingResponse(fileId);
 
         if (response?.data?.Status === "Success") {
@@ -165,13 +165,16 @@ const ChatBot: React.FC = () => {
         attempts++;
       }
       if (!processingDone) {
-        showToast.warning("Polling ended but processing not complete.");
+        showToast.warning(
+          "Processing is taking longer than expected. Please try again later."
+        );
       }
       if (chat.size === "expanded") {
         dispatch(setPageSize("split"));
       }
     } catch (error) {
       console.error("Error during processing:", error);
+      showToast.error("Something went wrong while processing the file.");
     } finally {
       setIsProcessing(false);
     }
@@ -196,46 +199,64 @@ const ChatBot: React.FC = () => {
     return `${formattedDate.replace(",", "")} at ${formattedTime}`;
   }
   const handleSend = async () => {
-    if (input.trim() !== "") {
-      dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
-      if (!isChatStarted) setIsChatStarted(true);
-      if (chat.size === "expanded" && globalMessages.gridData) {
-        dispatch(setPageSize("split"));
-      }
-      const userMessage: Message = { text: input, sender: "user" };
-      const updatedMessages = [...globalMessages.messages, userMessage];
-      dispatch(addGlobalMessages(updatedMessages));
-      setInput("");
-      const data = {
-        user_id: user.user_id,
-        conv_id: "",
-        prompt: input,
-      };
+    if (input.trim().length < 3) return;
+
+    dispatch(setTime({ lastModifiedTime: formatDateTime(new Date()) }));
+    setIsChatStarted(true);
+    if (chat.size === "expanded" && globalMessages.gridData) {
+      dispatch(setPageSize("split"));
+    }
+
+    const userMessage: Message = { text: input, sender: "user" };
+    const updatedMessages = [...globalMessages.messages, userMessage];
+    dispatch(addGlobalMessages(updatedMessages));
+    setInput("");
+    try {
       setLoading(true);
-      postChat(data)
-        .then((res) => {
-          const botAnswer = res.options?.answer;
-          const confidence = res.options?.confidence;
-  
-          let botMessage: Message;
-          if (botAnswer) {
-            const confidenceText = confidence !== undefined ? `\n\nConfidence: ${confidence}` : "";
-            botMessage = {
-              text: `${botAnswer}${confidenceText}`,
-              sender: "bot",
-            };
-          } else {
-            botMessage = { text: NO_INFO, sender: "bot" };
-          }
-  
-          const finalMessages = [...updatedMessages, botMessage];
-          dispatch(addGlobalMessages(finalMessages));
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching chat response:", error);
-          setLoading(false);
-        });
+      const data = { user_id: user.user_id, conv_id: "", prompt: input };
+      const res = await postChat(data);
+      const { answer, confidence, references } = res.options || {};
+
+      const confidenceText = confidence
+        ? `<br /><br /><strong>Confidence:</strong> ${confidence}`
+        : "";
+
+      const referencesText =
+        references?.length > 0
+          ? `<br/><br/><strong>References:</strong><br/>` +
+            references
+              .map(
+                (ref) => `
+            <div style="margin-top: 6px; border-left: 3px solid #ccc; padding-left: 12px;">
+              ${ref.Statement.split("\n")
+                .map((line) => {
+                  const boldMatch = line.match(/^([A-Za-z ]+):\s*/);
+                  if (boldMatch) {
+                    const label = boldMatch[1];
+                    const rest = line.slice(label.length + 2);
+                    return `<div><strong>${label}:</strong> ${rest}</div>`;
+                  }
+                  return `<div>${line}</div>`;
+                })
+                .join("")}
+              <div style="font-size: 0.85em; color: #888; margin-top: 4px;"><em>Source:</em> ${
+                ref.source
+              }</div>
+            </div>
+          `
+              )
+              .join("")
+          : "";
+
+      const botMessage: Message = {
+        text: answer ? `${answer}${confidenceText}${referencesText}` : NO_INFO,
+        sender: "bot",
+      };
+      dispatch(addGlobalMessages([...updatedMessages, botMessage]));
+    }catch(err) {
+      console.error("Chat error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -395,16 +416,17 @@ const ChatBot: React.FC = () => {
                       {BUTTON_LABELS.process}
                     </button>
                   )}
-                  {!isProcessing &&
-                  <img
-                    src={Delete}
-                    alt="delete"
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setFile(undefined);
-                      setIsFileUploaded(false);
-                    }}
-                  />}
+                  {!isProcessing && (
+                    <img
+                      src={Delete}
+                      alt="delete"
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setFile(undefined);
+                        setIsFileUploaded(false);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -474,6 +496,14 @@ const ChatBot: React.FC = () => {
                   placeholder={PLACEHOLDER_TEXT}
                   className="chatbot-input-field"
                   rows={1}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault(); // Prevents newline
+                      if (input.trim().length >= 3) {
+                        handleSend();
+                      }
+                    }
+                  }}
                 />
                 <button
                   onClick={handleSend}
