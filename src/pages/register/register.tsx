@@ -6,8 +6,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import userpool from "../../states/userpool";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
-import CommonModal from "../commonModal/commonModal";
-import { EMAIL_REGEX, PASS_REGEX, REGISTERED_MESSAGE } from "../../constants/constant";
+import { EMAIL_REGEX, PASS_REGEX } from "../../constants/constant";
 import { useSelector } from "react-redux";
 import { selectAuth } from "../../features/authSlice/selector";
 
@@ -24,7 +23,6 @@ const Register: React.FC = () => {
   const [confirmPassErr, setConfirmPassErr] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const isAuthenticated = Boolean(authInfo.access);
@@ -129,8 +127,8 @@ const Register: React.FC = () => {
                 console.error(err);
                 return;
               }
-              console.log(data);
-              setOpenModal(true); // Open modal on success
+              navigate("/verify-user", { state: { email: email } });
+              // setOpenModal(true); // Open modal on success
             });
           }
         },
@@ -230,7 +228,6 @@ const Register: React.FC = () => {
           </div>
         </form>
       </div>
-      {openModal && <CommonModal closeModal={setOpenModal} message={REGISTERED_MESSAGE} title="Account Created!" type="auth"/>}
     </div>
   );
 };
