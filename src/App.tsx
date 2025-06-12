@@ -13,6 +13,7 @@ import ResetPass from "./pages/resetPass/resetPass";
 import AuthRoute from "./pages/authRoute/authRoute";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import VerifyUser from "./pages/verifyUser";
 
 const App: React.FC = () => {
   return (
@@ -34,6 +35,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-user" element={<VerifyUser />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password" element={<ResetPass />} />
           <Route

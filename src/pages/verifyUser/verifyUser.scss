@@ -1,6 +1,6 @@
 @import "../../assets/variable.scss";
 
-.forgot-pass-container {
+.verify-user-container {
   display: flex;
   height: 100vh;
   .bold-text {
@@ -47,7 +47,7 @@
         color: $white;
         margin-bottom: 2rem;
       }
-      .top-disclaimer{
+      .top-disclaimer {
         display: flex;
         align-items: center;
         color: $white;
@@ -81,6 +81,33 @@
         width: 100%;
         margin-top: rem(-16);
       }
+      .resend-code-section {
+        margin-top: rem(4);
+        display: flex;
+        justify-content: flex-end;
+
+        .resend-button {
+          background-color: transparent;
+          color: #007bff;
+          border: none;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          padding: 0;
+          transition: color 0.3s ease;
+
+          &:hover:not(:disabled) {
+            color: #0056b3;
+            text-decoration: underline;
+          }
+
+          &:disabled {
+            color: #999;
+            cursor: not-allowed;
+          }
+        }
+      }
+
       .bottom-disclaimer {
         display: flex;
         align-items: center;

@@ -19,8 +19,8 @@ const FileWindow: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [processingFiles, setProcessingFiles] = useState<Set<string>>(new Set());
   const [processedFiles, setProcessedFiles] = useState<File[]>([]);
-  const POLL_INTERVAL = 3000;
-  const MAX_ATTEMPTS = 30;
+  const POLL_INTERVAL = 4000;
+  const MAX_ATTEMPTS = 45;
 
   const handleProcessClick = async (fileToProcess: File) => {
     if (!fileToProcess) return;
@@ -38,7 +38,9 @@ const FileWindow: React.FC = () => {
       while (attempts < MAX_ATTEMPTS) {
         result = await getUploadFileResponse(taskId);
         if (result.data[0].status === "completed") {
-          showToast.success(`File "${fileToProcess.name}" processed successfully!`);
+          showToast.success(`File "${fileToProcess.name}" processed successfully!`, {
+          autoClose: false,
+        });
           break;
         }
         if (result.data[0].status === "failed") {
