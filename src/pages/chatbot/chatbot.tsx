@@ -51,6 +51,13 @@ const ChatBot: React.FC = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const [file, setFile] = useState<File | undefined>(undefined);
   const chat = useSelector(selectpage);
+  const isMounted = useRef<boolean>(true); 
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (chat.page === "chat") {
@@ -71,16 +78,9 @@ const ChatBot: React.FC = () => {
       }
     }
     // @ts-ignore: Ignoring TypeScript error for the dependency array
-  }, [globalMessages.messages, chat.page, messagesContainerRef]);
+  }, [globalMessages.messages, chat.page]);
 
-  // const generateBotOptions = (answers: ChatResponse[]) => {
-  //   const botResponses = answers.map((answer) => ({
-  //     id: uuidv4(),
-  //     text: answer.answer,
-  //   }));
-
-  //   setBotOptions(botResponses);
-  // };
+  
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
     setIsFileUploaded(true);
@@ -106,10 +106,10 @@ const ChatBot: React.FC = () => {
         const { file, errors } = fileRejection;
         errors.forEach((error) => {
           if (error.code === "file-too-large") {
-            alert(`File "${file.name}" is too large. Maximum size is 200 MB.`);
+            showToast.error(`File "${file.name}" is too large. Maximum size is 200 MB.`);
           }
           if (error.code === "file-invalid-type") {
-            alert(
+            showToast.error(
               `File "${file.name}" has an invalid format. Allowed formats: CSV, PDF, XLSX, XLS.`
             );
           }
@@ -153,7 +153,7 @@ const ChatBot: React.FC = () => {
       let attempts = 0;
       let processingDone = false;
 
-      while (attempts <= maxAttempts && !processingDone) {
+      while (attempts <= maxAttempts && !processingDone && isMounted.current) {
         const response = await getFileProcessingResponse(fileId);
 
         if (response?.data?.Status === "Success") {
@@ -253,8 +253,16 @@ const ChatBot: React.FC = () => {
         sender: "bot",
       };
       dispatch(addGlobalMessages([...updatedMessages, botMessage]));
-    }catch(err) {
+    } catch (err) {
       console.error("Chat error:", err);
+      showToast.error("Failed to connect to the chatbot. Please try again.");
+
+      // Optional: Add a friendly error message into the chat UI directly
+      const errorMessage: Message = {
+        text: "Sorry, I am having trouble processing your request right now.",
+        sender: "bot",
+      };
+      dispatch(addGlobalMessages([...updatedMessages, errorMessage]));
     } finally {
       setLoading(false);
     }
